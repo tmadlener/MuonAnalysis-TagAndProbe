@@ -44,7 +44,7 @@ void createPtRootFiles(){
 
 
   // code set up so that MC file is split in different files for abseta bins
-  const std::string effName[] = {"Loose2012", "Soft2012", "newSoft2012", "Tight2012"};
+  const std::vector<std::string> effName = {"Loose2012", "Soft2012", "newSoft2012", "Tight2012"};
   int iEff = 3;
   // give number of abseta bin
   int abseta = 2;
@@ -60,33 +60,33 @@ void createPtRootFiles(){
   TFile *output = new TFile(outputfile.str().c_str(),"RECREATE");
 
   // Name of samples: data and MC
-  const std::string effSampleName[] = {"DATA", "MC"};
+  const std::vector<std::string> effSampleName = {"DATA", "MC"};
   //const std::string effSampleName[] = {"MC", "MC"};
-  const int nEffSample = sizeof(effSampleName)/sizeof(effSampleName[0]);
+  const auto nEffSample = effSampleName.size();
   // Name of trigger: Mu5_Track2, Mu7_Track7
-  const std::string trackName[] = {"Mu5_Track2", "Mu7_Track7"};
-  const int nTrack = sizeof(trackName)/sizeof(trackName[0]);
+  const std::vector<std::string> trackName = {"Mu5_Track2", "Mu7_Track7"};
+  const auto nTrack = trackName.size();
 
   //Declare bins according to efficiency
   //pt_abseta
-  double bins1[] = {2.0, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75, 4.0, 4.5, 5.0, 6.0, 8.0, 10.0, 20.0};
+  const std::vector<double> bins1 = {2.0, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75, 4.0, 4.5, 5.0, 6.0, 8.0, 10.0, 20.0};
   //double bins1[] = {2.0, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75, 4.0, 4.5, 5.0, 6.0, 8.0, 10.0, 15.0, 20.0};
   //double bins1[] = {2, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75, 4.0, 4.5, 5.0, 5.5, 6.0, 7.0, 9.0, 11.0, 14.0, 17.0, 20.0};
   //double bins1[] = {10, 20, 25, 30, 35, 40, 50, 60, 90, 140, 300, 500};
-  double bins2[] = {0,2.4}; // does not matter since we always look at only one abseta bin
+  const std::vector<double> bins2 = {0,2.4}; // does not matter since we always look at only one abseta bin
   //double bins2[] = {0.,0.9,1.2,2.1,2.4};
 
-  const int nBins1 = sizeof(bins1)/sizeof(bins1[0]);
-  const int nBins2 = sizeof(bins2)/sizeof(bins2[0]);
+  const auto nBins1 = bins1.size();
+  const auto nBins2 = bins2.size();
 
   // structure to store values
   storage values[nEffSample][nTrack][nBins1][nBins2];
 
   // initialize storage
-  for(int iEffSample = 0; iEffSample < nEffSample; iEffSample++){
-    for(int iTrack = 0; iTrack < nTrack; iTrack++){
-      for (int iBins1 = 0; iBins1 < nBins1; iBins1++){
-        for (int iBins2 = 0; iBins2 < nBins2; iBins2++){
+  for(size_t iEffSample = 0; iEffSample < nEffSample; iEffSample++){
+    for(size_t iTrack = 0; iTrack < nTrack; iTrack++){
+      for (size_t iBins1 = 0; iBins1 < nBins1; iBins1++){
+        for (size_t iBins2 = 0; iBins2 < nBins2; iBins2++){
           values[iEffSample][iTrack][iBins1][iBins2].null();
         } //iBins1
       } //iBins2
@@ -94,7 +94,7 @@ void createPtRootFiles(){
   } //iEffSample
 
 
-  for(int iEffSample = 0; iEffSample < nEffSample; iEffSample++){
+  for(size_t iEffSample = 0; iEffSample < nEffSample; iEffSample++){
 
     //create TGraphAsymmErrors to store graph
     TGraphAsymmErrors *graph = new TGraphAsymmErrors();
@@ -103,8 +103,8 @@ void createPtRootFiles(){
     TFile *file;
     if(iEffSample==0){
       file = open(datafile.str().c_str());
-      std:: cout << "Sucessfully opened data file" << std::endl;
       if(!file) return;
+      std:: cout << "Sucessfully opened data file" << std::endl;
     }
     else{
       file = open(mcfile.str().c_str());
@@ -117,7 +117,7 @@ void createPtRootFiles(){
     if (!dir_tpTree) return;
 
     //Jump to next directory
-    for(int iTrack = 0; iTrack < nTrack; iTrack++){
+    for(size_t iTrack = 0; iTrack < nTrack; iTrack++){
 
       std::stringstream directory;
       directory << effName[iEff] << "_pt_abseta_" << trackName[iTrack];
@@ -140,7 +140,7 @@ void createPtRootFiles(){
       //inter << "pt_PLOT";
       plot = inter.str();
 
-      for(int iBins2 = 0; iBins2 < nBins2-1; iBins2++){
+      for(size_t iBins2 = 0; iBins2 < nBins2-1; iBins2++){
 
         std::stringstream name;
         name << effSampleName[iEffSample];
@@ -156,11 +156,11 @@ void createPtRootFiles(){
         int N = get_plot->GetN();
         if (N == 0) continue;
 
-        for(int iBins1 = 0; iBins1 < nBins1-1; iBins1++){
+        for(size_t iBins1 = 0; iBins1 < nBins1-1; iBins1++){
 
           //get values from plot
           double x = 0, y = 0;
-          double z = get_plot->GetPoint(iBins1, x, y);
+          // double z = get_plot->GetPoint(iBins1, x, y);
           double err_high = get_plot->GetErrorYhigh(iBins1);
           double err_low = get_plot->GetErrorYlow(iBins1);
           double var_high = get_plot->GetErrorXhigh(iBins1);
@@ -171,7 +171,7 @@ void createPtRootFiles(){
           if(y + err_high > 1) err_high = 1 - y;
 
           //store values
-          for(int s = 0; s < nBins1; s++){
+          for(size_t s = 0; s < nBins1; s++){
             if(x > bins1[s] && x < bins1[s+1]){
               values[iEffSample][iTrack][s][iBins2].setEff(y, err_low, err_high);
               values[iEffSample][iTrack][s][iBins2].setVar(x, var_low, var_high);
@@ -186,11 +186,11 @@ void createPtRootFiles(){
     } // iTrack
 
 
-    for(int iBins2 = 0; iBins2 < nBins2-1; iBins2++){
+    for(size_t iBins2 = 0; iBins2 < nBins2-1; iBins2++){
 
       int points = 0;
 
-      for(int iBins1 = 0; iBins1 < nBins1-1; iBins1++){
+      for(size_t iBins1 = 0; iBins1 < nBins1-1; iBins1++){
 
         //fill TGraphsAsymmErrors
         //fill with Mu5_Track2 for pt < 9 GeV - former 7 GeV
@@ -236,14 +236,14 @@ void createPtRootFiles(){
     // ratio: DATA/MC
   TGraphAsymmErrors *ratio = new TGraphAsymmErrors();
 
-  for(int iBins2 = 0; iBins2 < nBins2-1; iBins2++){
+  for(size_t iBins2 = 0; iBins2 < nBins2-1; iBins2++){
 
     std::stringstream name1;
     name1 << "RATIO";
     std::cout << name1.str().c_str() << std::endl;
 
     int points = 0;
-    for(int iBins1 = 0; iBins1 < nBins1-1; iBins1++){
+    for(size_t iBins1 = 0; iBins1 < nBins1-1; iBins1++){
 
       // compute ratio
       double eff_ratio = 0,
@@ -278,7 +278,7 @@ void createPtRootFiles(){
       }
 
       double x_high = 0, x_low = 0;
-      for (int i = 0; i < nBins1-1; i++){
+      for (size_t i = 0; i < nBins1-1; i++){
         if ((bins1[i] <= mean_var) && (bins1[i+1] >= mean_var)){
           //std::cout << "found bin: " << bins1[i] << " " << bins1[i+1] << std::endl;
           x_low = mean_var - bins1[i];
@@ -297,10 +297,10 @@ void createPtRootFiles(){
         //          << std::endl;
       }
 
-      cout.precision(4);
+      std::cout.precision(4);
       //std::cout << "Only Mu5_Track2 is shown. Be careful with ratios." << std::endl;
       std::cout << " & " << bins1[iBins1] << " $ < p_T < $ " << bins1[iBins1+1] << " & $"
-                << fixed << values[0][0][iBins1][iBins2].eff << "^{+"
+                << std::fixed << values[0][0][iBins1][iBins2].eff << "^{+"
                 << values[0][0][iBins1][iBins2].eff_high << "}_{-"
                 << values[0][0][iBins1][iBins2].eff_low << "}$ & $"
                 << values[1][0][iBins1][iBins2].eff << "^{+"
@@ -321,3 +321,12 @@ void createPtRootFiles(){
   } //iBins2
 
 } //void
+
+#ifndef __CINT__
+int main (int argc, char* const argv[])
+{
+  createPtRootFiles();
+
+  return 0;
+}
+#endif

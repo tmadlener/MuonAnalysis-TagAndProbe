@@ -41,9 +41,9 @@ void calcSF(){
   gROOT->SetStyle("Plain");
   gStyle->SetTitleBorderSize(0);
 
-  const std::string effName[] = {"Loose2012", "Soft2012", "newSoft2012", "Tight2012"};
+  const std::vector<std::string> effName = {"Loose2012", "Soft2012", "newSoft2012", "Tight2012"};
   int iEff = 3;
-  const std::string scenario[] = {"_eta", "_vtx", "_plateau_abseta"};
+  const std::vector<std::string> scenario = {"_eta", "_vtx", "_plateau_abseta"};
   int iScen = 0;
 
   //input files
@@ -57,45 +57,45 @@ void calcSF(){
   TFile *output = new TFile(outputfile.str().c_str(),"RECREATE");
 
   // Name of samples: data and MC
-  const std::string effSampleName[] = {"MC", "MC NO TRIGGER"};
-  const int nEffSample = sizeof(effSampleName)/sizeof(effSampleName[0]);
+  const std::vector<std::string> effSampleName = {"MC", "MC NO TRIGGER"};
+  const auto nEffSample = effSampleName.size();
 
   //Declare bins according to efficiency
   //eta
-  double etabins[] = {-2.1, -1.6, -1.2, -0.9, -0.6, -0.3, -0.2, 0.2, 0.3, 0.6, 0.9, 1.2, 1.6, 2.1};
-  int nEtabins = sizeof(etabins)/sizeof(etabins[0]);
+  const std::vector<double> etabins = {-2.1, -1.6, -1.2, -0.9, -0.6, -0.3, -0.2, 0.2, 0.3, 0.6, 0.9, 1.2, 1.6, 2.1};
+
   //vtx
-  double vtxbins[] ={0.5, 2.5, 4.5, 6.5, 8.5, 10.5, 12.5, 14.5, 16.5, 18.5, 20.5, 22.5, 24.5, 26.5, 28.5, 30.5}; //vtx
-  int nVtxbins = sizeof(vtxbins)/sizeof(vtxbins[0]);
+  const std::vector<double> vtxbins = {0.5, 2.5, 4.5, 6.5, 8.5, 10.5, 12.5, 14.5, 16.5, 18.5, 20.5, 22.5, 24.5, 26.5, 28.5, 30.5}; //vtx
+
   //plateau_abseta
-  double absetabins[] = {0., 0.9, 1.2, 2.1}; //abseta
-  int nAbsetabins = sizeof(absetabins)/sizeof(absetabins[0]);
+  const std::vector<double> absetabins = {0., 0.9, 1.2, 2.1}; //abseta
+
 
   std::vector <double> bins1;
-  if(iScen == 0) bins1.assign(etabins, etabins + nEtabins);
-  else if(iScen == 1) bins1.assign(vtxbins, vtxbins + nVtxbins);
-  else if(iScen == 2) bins1.assign(absetabins, absetabins + nAbsetabins);
+  if(iScen == 0) bins1 = etabins;
+  else if(iScen == 1) bins1 = vtxbins;
+  else if(iScen == 2) bins1 = absetabins;
   else{
     std::cout << "This scenario is not possible!" << std::endl;
     return;}
 
-  const int nBins1 = bins1.size();
-  int nBins2 = 2;
+  const auto nBins1 = bins1.size();
+  size_t nBins2 = 2;
 
   // structure to store values
   storage values[nEffSample][nBins1][nBins2];
 
   // initialize storage
-  for(int iEffSample = 0; iEffSample < nEffSample; iEffSample++){
-    for (int iBins1 = 0; iBins1 < nBins1; iBins1++){
-      for (int iBins2 = 0; iBins2 < nBins2; iBins2++){
+  for(size_t iEffSample = 0; iEffSample < nEffSample; iEffSample++){
+    for (size_t iBins1 = 0; iBins1 < nBins1; iBins1++){
+      for (size_t iBins2 = 0; iBins2 < nBins2; iBins2++){
         values[iEffSample][iBins1][iBins2].null();
       } //iBins1
     } //iBins2
   } //iEffSample
 
 
-  for(int iEffSample = 0; iEffSample < nEffSample; iEffSample++){
+  for(size_t iEffSample = 0; iEffSample < nEffSample; iEffSample++){
 
     // open input files
     TFile *file;
@@ -126,7 +126,7 @@ void calcSF(){
     //std:: cout << "Found fit directory" << std::endl;
 
     //create TGraphAsymmErrors
-    TGraphAsymmErrors *graph = new TGraphAsymmErrors();
+    // TGraphAsymmErrors *graph = new TGraphAsymmErrors();
 
     std::string plot;
     if(iScen == 0){
@@ -148,7 +148,7 @@ void calcSF(){
         plot = "abseta_PLOT";
     }
 
-    for(int iBins2 = 0; iBins2 < nBins2-1; iBins2++){
+    for(size_t iBins2 = 0; iBins2 < nBins2-1; iBins2++){
 
       std::cout << plot.c_str() << std::endl;
       TCanvas *c = dynamic_cast<TCanvas*>(dir_fit_eff->Get(plot.c_str()));
@@ -158,11 +158,11 @@ void calcSF(){
       int N = get_plot->GetN();
       if (N == 0) continue;
 
-      for(int iBins1 = 0; iBins1 < nBins1-1; iBins1++){
+      for(size_t iBins1 = 0; iBins1 < nBins1-1; iBins1++){
 
         //get values from plot
         double x = 0, y = 0;
-        double z = get_plot->GetPoint(iBins1, x, y);
+        // double z = get_plot->GetPoint(iBins1, x, y);
         double err_high = get_plot->GetErrorYhigh(iBins1);
         double err_low = get_plot->GetErrorYlow(iBins1);
         double var_high = get_plot->GetErrorXhigh(iBins1);
@@ -172,7 +172,7 @@ void calcSF(){
         //if(iEffSample == 1 && err_high > 0.01) {err_high = err_low; std::cout << "changed high error" << std::endl;}
 
         //store values
-        for(int s = 0; s < nBins1; s++){
+        for(size_t s = 0; s < nBins1; s++){
           if(x > bins1[s] && x < bins1[s+1]){
             values[iEffSample][s][iBins2].setEff(y, err_low, err_high);
             values[iEffSample][s][iBins2].setVar(x, var_low, var_high);
@@ -187,7 +187,7 @@ void calcSF(){
   } //iEffSample
 
     // compute scale factors
-  for(int iEffSample = 0; iEffSample < nEffSample-1; iEffSample++){
+  for(size_t iEffSample = 0; iEffSample < nEffSample-1; iEffSample++){
 
     //create TGraphAsymmErrors to store SF
     TGraphAsymmErrors *graph = new TGraphAsymmErrors();
@@ -195,14 +195,14 @@ void calcSF(){
     graph->SetName(name.c_str());
     graph->SetTitle(name.c_str());
 
-    for(int iBins2 = 0; iBins2 < nBins2-1; iBins2++){
+    for(size_t iBins2 = 0; iBins2 < nBins2-1; iBins2++){
 
       double eff_SF = 0,
         err_low_SF = 0,
         err_high_SF = 0;
       int points = 0;
 
-      for(int iBins1 = 0; iBins1 < nBins1-1; iBins1++){
+      for(size_t iBins1 = 0; iBins1 < nBins1-1; iBins1++){
 
         //fill TGraphsAsymmErrors
         if(!isZero(values[iEffSample][iBins1][iBins2].eff)){
@@ -221,7 +221,7 @@ void calcSF(){
           points++;
         }
 
-        cout.precision(4);
+        std::cout.precision(4);
         std::string variable;
         if(iScen==0)
           variable = " $ < eta < $ ";
@@ -230,7 +230,7 @@ void calcSF(){
         else
           variable = " $ < |eta| < $ ";
         std::cout << " & " << bins1[iBins1] << variable.c_str() << bins1[iBins1+1] << " & $"
-                  << fixed //<< values[iEffSample][iBins1][iBins2].eff << "^{+"
+                  << std::fixed //<< values[iEffSample][iBins1][iBins2].eff << "^{+"
           //<< values[iEffSample][iBins1][iBins2].eff_high << "}_{-"
           //    << values[iEffSample][iBins1][iBins2].eff_low << "}$ & $"
                   << eff_SF << "^{+"
@@ -249,3 +249,12 @@ void calcSF(){
 
 
 } //void
+
+#ifndef __CINT__
+int main(int argc, char* const argv[])
+{
+  calcSF();
+
+  return 0;
+}
+#endif

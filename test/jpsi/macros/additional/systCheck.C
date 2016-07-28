@@ -42,7 +42,7 @@ void systCheck(){
   gROOT->SetStyle("Plain");
   gStyle->SetTitleBorderSize(0);
 
-  const std::string effName[] = {"Loose2012", "Soft2012", "newSoft2012", "Tight2012"};
+  const std::vector<std::string> effName = {"Loose2012", "Soft2012", "newSoft2012", "Tight2012"};
   int iEff = 0;
 
   //input files
@@ -51,29 +51,29 @@ void systCheck(){
   datafile1 << "/scratch/ikratsch/TnP2012/MuonPOG/official6March2014/changedMass/MuonID_" << effName[iEff] << "_plateau_abseta" << "_seagulls_dist200_2012.root";
 
   // Name of samples: data and MC
-  const std::string effSampleName[] = {"DATA", "MC", "RATIO"};
-  const int nEffSample = sizeof(effSampleName)/sizeof(effSampleName[0]);
+  const std::vector<std::string> effSampleName = {"DATA", "MC", "RATIO"};
+  const auto nEffSample = effSampleName.size();
   std::cout << "Number of samples: " << nEffSample << std::endl;
 
   //Declare bins according to efficiency
   //pt_abseta
-  double bins1[] = {0.,0.9,1.2,2.1};
-  const int nBins1 = sizeof(bins1)/sizeof(bins1[0]);
+  const std::vector<double> bins1 = {0.,0.9,1.2,2.1};
+  const auto nBins1 = bins1.size();
 
   // structure to store values
   storage values[2][nEffSample][nBins1];
 
   // initialize storage
-  for(int i = 0; i < 2; i++){ // loop through sample & refernce sample
-    for(int iEffSample = 0; iEffSample < nEffSample; iEffSample++){
-      for (int iBins1 = 0; iBins1 < nBins1; iBins1++){
+  for(size_t i = 0; i < 2; i++){ // loop through sample & refernce sample
+    for(size_t iEffSample = 0; iEffSample < nEffSample; iEffSample++){
+      for (size_t iBins1 = 0; iBins1 < nBins1; iBins1++){
         values[i][iEffSample][iBins1].null();
       } //iBins1
     } //iEffSample
   }//i
 
-  for(int i = 0; i < 2; i++){ // loop through sample & refernce sample
-    for(int iEffSample = 0; iEffSample < nEffSample; iEffSample++){
+  for(size_t i = 0; i < 2; i++){ // loop through sample & refernce sample
+    for(size_t iEffSample = 0; iEffSample < nEffSample; iEffSample++){
 
       // open input files
       TFile *file;
@@ -95,18 +95,18 @@ void systCheck(){
       int N = get_plot->GetN();
       if (N == 0) continue;
 
-      for(int iBins1 = 0; iBins1 < nBins1-1; iBins1++){
+      for(size_t iBins1 = 0; iBins1 < nBins1-1; iBins1++){
 
         //get values from plot
         double x = 0, y = 0;
-        double z = get_plot->GetPoint(iBins1, x, y);
+        // double z = get_plot->GetPoint(iBins1, x, y);
         double err_high = get_plot->GetErrorYhigh(iBins1);
         double err_low = get_plot->GetErrorYlow(iBins1);
         double var_high = get_plot->GetErrorXhigh(iBins1);
         double var_low = get_plot->GetErrorXlow(iBins1);
 
         //store values
-        for(int s = 0; s < nBins1; s++){
+        for(size_t s = 0; s < nBins1; s++){
           if(x > bins1[s] && x < bins1[s+1]){
             values[i][iEffSample][s].setEff(y, err_low, err_high);
             values[i][iEffSample][s].setVar(x, var_low, var_high);
@@ -120,20 +120,30 @@ void systCheck(){
     } // iEffSample
   }//i
 
-  for(int iEffSample = 0; iEffSample < nEffSample; iEffSample++){
-    TGraphAsymmErrors *graph = new TGraphAsymmErrors();
+  for(size_t iEffSample = 0; iEffSample < nEffSample; iEffSample++){
+    // TGraphAsymmErrors *graph = new TGraphAsymmErrors();
 
     std::stringstream name;
     name << effSampleName[iEffSample];
     std::cout << name.str().c_str() << std::endl;
 
-    for(int iBins1 = 0; iBins1 < nBins1-1; iBins1++){
+    for(size_t iBins1 = 0; iBins1 < nBins1-1; iBins1++){
 
       double syst = (values[1][iEffSample][iBins1].eff - values[0][iEffSample][iBins1].eff)/values[0][iEffSample][iBins1].eff;
-      cout.precision(4);
+      std::cout.precision(4);
       std::cout << bins1[iBins1] << " $ < p_T < $ " << bins1[iBins1+1] << " & "
-                << fixed << syst << std::endl;
+                << std::fixed << syst << std::endl;
 
     } //iBins1
   } //iEffSample
 } //void
+
+#ifndef __CINT__
+int main(int argc, char* const argv[])
+{
+  systCheck();
+
+  return 0;
+}
+
+#endif

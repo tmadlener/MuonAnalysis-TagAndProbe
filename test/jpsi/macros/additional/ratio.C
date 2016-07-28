@@ -55,19 +55,18 @@ void ratio(){
 
   // binning
   //eta
-  double bins1[] = {-2.1, -1.6, -1.2, -0.9, -0.6, -0.3, -0.2, 0.2, 0.3, 0.6, 0.9, 1.2, 1.6, 2.1};
-  int nBins1 = sizeof(bins1)/sizeof(bins1[0]);
+  const std::vector<double> bins1 = {-2.1, -1.6, -1.2, -0.9, -0.6, -0.3, -0.2, 0.2, 0.3, 0.6, 0.9, 1.2, 1.6, 2.1};
+
   //abseta
-  double bins2[] = {0., 0.9, 1.2, 2.1};
-  int nBins2 = sizeof(bins2)/sizeof(bins2[0]);
+  const std::vector<double> bins2 = {0., 0.9, 1.2, 2.1};
+
   //pt
-  double bins31[] = {2.0, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75, 4.0, 4.5, 5.0, 6.0, 8.0, 10.0, 20.0};
-  double bins3[] = {2.0, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75, 4.0, 4.5, 5.0, 6.0, 8.0, 10.0, 15.0, 20.0};
-  int nBins31 = sizeof(bins31)/sizeof(bins31[0]);
-  int nBins3 = sizeof(bins3)/sizeof(bins3[0]);
+  const std::vector<double> bins31 = {2.0, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75, 4.0, 4.5, 5.0, 6.0, 8.0, 10.0, 20.0};
+  const std::vector<double> bins3 = {2.0, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75, 4.0, 4.5, 5.0, 6.0, 8.0, 10.0, 15.0, 20.0};
+
   //vertex
-  double bins4[] = {0.5, 2.5, 4.5, 6.5, 8.5, 10.5, 12.5, 14.5, 16.5, 18.5, 20.5, 22.5, 24.5, 26.5, 28.5, 30.5};
-  int nBins4 = sizeof(bins4)/sizeof(bins4[0]);
+  const std::vector<double> bins4 = {0.5, 2.5, 4.5, 6.5, 8.5, 10.5, 12.5, 14.5, 16.5, 18.5, 20.5, 22.5, 24.5, 26.5, 28.5, 30.5};
+
 
   switch(scenario){
   case 1:
@@ -75,7 +74,7 @@ void ratio(){
     xtitle = "#eta";
     scen = "eta";
     values = "p_{T} > 8 GeV/c";
-    bins.assign(bins1, bins1 + nBins1);
+    bins = bins1;
     x1 = -2.2; // -2.2
     x2 = 2.2; // 2.2
     y1 = 0.9; // 0.5
@@ -88,7 +87,7 @@ void ratio(){
     xtitle = "|#eta|";
     scen = "plateau_abseta";
     values = "p_{T} > 8 GeV/c";
-    bins.assign(bins2, bins2 + nBins2);
+    bins = bins2;
     x1 = 0;
     x2 = 2.2;
     y1 = 0.3;
@@ -100,16 +99,16 @@ void ratio(){
     scen = "pt_abseta";
     if(absetaBin == "0"){
       values = "|#eta| < 0.9";
-      bins.assign(bins31, bins31 + nBins31);
+      bins = bins31;
       y2 = 1.2;
       if(id == "Tight") y2 = 1.4;
     }else if(absetaBin == "1"){
       values = "0.9 < |#eta| < 1.2";
-      bins.assign(bins3, bins3 + nBins3);
+      bins = bins3;
       y2 = 1.7;
     }else if(absetaBin == "2"){
       values = "1.2 < |#eta| < 2.1";
-      bins.assign(bins3, bins3 + nBins3);
+      bins = bins3;
       y2 = 1.2;
     }
     x1 = 1;
@@ -128,7 +127,7 @@ void ratio(){
     xtitle = "number of vertices";
     scen = "vtx";
     values = "|#eta| < 2.1, p_{T} > 8 GeV/c";
-    bins.assign(bins4, bins4 + nBins4);
+    bins = bins4;
     x1 = 0.;
     x2 = 31.;
     y1 = 0.9;
@@ -179,7 +178,7 @@ void ratio(){
   TLatex *latex = new TLatex();
   latex->SetNDC(kTRUE);
   latex->SetTextSize(0.05);
-  double left = 0.12, top = 0.92, bottom = 0.23, right = 0.8;
+  double left = 0.12, top = 0.92, /*bottom = 0.23,*/ right = 0.8;
   latex->DrawLatex(left,top,"CMS preliminary             Run 2012");
 
   TLatex *latex1 = new TLatex();
@@ -260,3 +259,12 @@ void ratio(){
   name << "Figures/Approval/" << id.c_str() << "ID_" << scen.c_str() << absetaBin.c_str() << separation.c_str() << "_2012.pdf";
   c->SaveAs(name.str().c_str());
 }
+
+#ifndef __CINT__
+int main (int argc, char* const argv[])
+{
+  ratio();
+
+  return 0;
+}
+#endif
