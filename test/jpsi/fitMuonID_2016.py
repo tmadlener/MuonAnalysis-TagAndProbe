@@ -18,11 +18,10 @@ process = cms.Process("TagProbe")
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('FWCore.MessageService.MessageLogger_cfi')
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
-process.MessageLogger.cerr.FwkReport.reportEvery = 10000
 
 process.source = cms.Source("EmptySource")
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1) )
 
 print "About to define TagProbeFitTreeAnalyzer"
 
@@ -163,7 +162,7 @@ Template = cms.EDAnalyzer("TagProbeFitTreeAnalyzer",
           Loose2012 = cms.vstring("Loose", "LooseVar", "0.5"),
           Loose2015 = cms.vstring("Loose2015", "Loose2015Var", "0.5"),
           Loose2016 = cms.vstring("Loose2016", "Loose2016Var", "0.5"),
-        Loose2016_test = cms.vstring("Loose2016", "Loose", "0.5"),
+          Loose2016_test = cms.vstring("Loose2016", "Loose", "0.5"),
           Medium2015 = cms.vstring("Medium2015", "MediumVar", "0.5"),
           Tight2012_def = cms.vstring("Tight", "TightVar", "0.5"), # renamed to avoid emitting of warning of being already in set
           Tight2012_zIPCut = cms.vstring("Tight2012_zIPCut", "Tight2012_zIPCutVar", "0.5"),
@@ -419,29 +418,8 @@ TURNON_ABSETA = cms.PSet( SEPARATED,
 # Prefix should be "./" only
 PREFIX="/afs/cern.ch/work/l/lecriste/TnP/Ilse/CMSSW_5_3_22/test/"
 process.TnP_MuonID = Template.clone(
-     #InputFileNames = cms.vstring(
-     #    PREFIX+'tnpJPsi_Run2012A.root',
-     #    PREFIX+'tnpJPsi_Run2012B.root',
-     #    PREFIX+'tnpJPsi_Run2012C.root',
-     #    PREFIX+'tnpJPsi_Run2012D.root',
-     #),
-     ##InputFileNames = cms.vstring('/afs/cern.ch/user/m/msharma/public/tnpJPsi_Data.root'), # 400k events, no JSON
-     ##InputFileNames = cms.vstring('/afs/cern.ch/user/m/msharma/public/tnpJPsi_DataJuly232015.root'), # 800k events, no JSON
-     ##InputFileNames = cms.vstring('/afs/cern.ch/user/m/msharma/public/tnpJPsi_Data_246908-251883_JSON_MuonPhys_v2.root'),
-     ##InputFileNames = cms.vstring('/afs/cern.ch/work/l/lecriste/TnP/recipe_740/CMSSW_7_4_0/src/MuonAnalysis/TagAndProbe/test/jpsi/tnpJPsi_Charmonium_PromptReco_50ns_first47pb.root'),
-     ##InputFileNames = cms.vstring('/afs/cern.ch/work/l/lecriste/TnP/recipe_740/CMSSW_7_4_0/src/MuonAnalysis/TagAndProbe/test/jpsi/tnpJPsi_Charmonium_PromptReco_50ns_first47ipb_OniaTriggersFlags.root'),
-     #InputFileNames = cms.vstring('/afs/cern.ch/work/l/lecriste/TnP/recipe_740/CMSSW_7_4_0/src/MuonAnalysis/TagAndProbe/test/jpsi/tnpJPsi_Charmonium_PromptReco_50ns_first47ipb_vertexingTriggersFlags.root'),
-     ##InputFileNames = cms.vstring('/afs/cern.ch/work/l/lecriste/TnP/recipe_740/CMSSW_7_4_0/src/MuonAnalysis/TagAndProbe/test/jpsi/tnpJPsi_Charmonium_PromptReco_50ns.root'),
-     #InputFileNames = cms.vstring('/afs/cern.ch/work/l/lecriste/TnP/recipe_740/CMSSW_7_4_0/src/MuonAnalysis/TagAndProbe/test/jpsi/tnpJPsi_Data25ns.root'),
-     #InputFileNames = cms.vstring('/afs/cern.ch/work/l/lecriste/TnP/recipe_740/CMSSW_7_4_0/src/MuonAnalysis/TagAndProbe/test/jpsi/tnpJPsi_Data25ns_golden_small.root'), # Charmonium PD
-     # InputFileNames = cms.vstring('/afs/cern.ch/work/l/lecriste/TnP/recipe_740/CMSSW_7_4_0/src/MuonAnalysis/TagAndProbe/test/jpsi/tnpJPsi_Data25ns_golden.root'), # Charmonium PD
-     #InputFileNames = cms.vstring('/afs/cern.ch/work/l/lecriste/TnP/recipe_740/CMSSW_7_4_0/src/MuonAnalysis/TagAndProbe/test/jpsi/tnpJPsi_Data25ns_golden_Mu8.root'), # Mu8 test with DoubleMuon PD
-     #InputFileNames = cms.vstring('/afs/cern.ch/work/l/lecriste/TnP/recipe_740/CMSSW_7_4_0/src/MuonAnalysis/TagAndProbe/test/jpsi/tnpJPsi_Data25ns_golden_withMu25.root'), # Charmonium PD
-     #InputFileNames = cms.vstring('/afs/cern.ch/work/l/lecriste/TnP/recipe_740/CMSSW_7_4_0/src/MuonAnalysis/TagAndProbe/test/jpsi/tnpJPsi_Data25ns_golden_withMu16.root'), # MuOnia PD
-     #
-     # InputFileNames = cms.vstring('/scratch/tmadlener/data/TagAndProbe/2016/TnPTree_80X_Run2016B_v2_GoldenJSON_Run275126to275783.root'), # 2016 tree for testing
-     # InputFileNames = cms.vstring('/scratch/tmadlener/data/TagAndProbe/2016/TnPTree_80X_Run2016B_v2_GoldenJSON_Run271036to274443.root'), # 2016 Charmonium tree for testing
-     InputFileNames = cms.vstring('/scratch/tmadlener/data/TagAndProbe/2016/TnPTree_80X_Run2016C_v2_GoldenJSON_Run275377to276097.root'), # Run 2016C Charmonium tree
+     # InputFileNames = cms.vstring('/scratch/tmadlener/data/TagAndProbe/2016/TnPTree_80X_Run2016C_v2_GoldenJSON_Run275377to276097.root'), # Run 2016C Charmonium tree
+     InputFileNames = cms.vstring('/scratch/tmadlener/data/TagAndProbe/2016/TnPTree_80X_TuneCUEP8M1_withNVtxWeights.root'),
 
      InputTreeName = cms.string("fitter_tree"),
      InputDirectoryName = cms.string("tpTree"),
@@ -450,75 +428,26 @@ process.TnP_MuonID = Template.clone(
      Efficiencies = cms.PSet(),
 )
 
-# IDS = ["Soft2012"]
-#IDS = ["oldSoft2012"]
-#IDS = ["Loose2012"]
-#IDS = ["Loose2012", "Soft2012", "newSoft2012"]
-#IDS = [ "Glb", "TMOST", "VBTF", "PF" ]
-# Carlo request:
-# IDS = ["Loose2015", "Soft2012", "Medium2015", "Tight2012_zIPCut"]
+
 IDS = ["Loose2016", "Loose2016_test"]
 
-#TRIGS = [ (2,'Mu7p5_L2Mu2_Jpsi'), (2,'Mu7p5_Track2_Jpsi'), (3.5,'Mu7p5_Track3p5_Jpsi'), (7,'Mu7p5_Track7_Jpsi') ]
-#TRIGS = [ (2,'Mu7p5_Track2_Jpsi'), (7,'Mu7p5_Track7_Jpsi') ]
 TRIGS = [ (2,'Mu7p5_Track2_Jpsi') ]
 if "Mu8" in process.TnP_MuonID.InputFileNames[0]:
      TRIGS = [ (2,'Mu8') ] # Mu8 test
-#TRIGS = [ (7,'Mu7p5_Track7_Jpsi') ]
-#TRIGS = [ (0,'Mu8'), (0,'Mu17') ]
-#TRIGS = [ (0,'DoubleMu17TkMu8_TkMu8leg') ]
+
 
 UnbinnedVars = cms.vstring("mass")
 if "mc" in scenario:
      UnbinnedVars = cms.vstring("mass","weight")
      process.TnP_MuonID.InputFileNames = ['../tnpJPsi_officialBPHMC25ns_withMu25_withNVtxWeights.root']
-     #process.TnP_MuonID.InputFileNames = ['../tnpJPsi_officialBPHMC25ns_withAllTagVars_withNVtxWeightsFromGolden.root']
-     #process.TnP_MuonID.InputFileNames = ['../tnpJPsi_officialBPHMC25ns_withNVtxWeightsFromGolden.root']
-     #process.TnP_MuonID.InputFileNames = ['../tnpJPsi_officialBPHMC25ns_withNVtxWeightsFromMuonPhys.root']
-     #process.TnP_MuonID.InputFileNames = ['../tnpJPsi_officialBPHMC25ns.root']
-     #process.TnP_MuonID.InputFileNames = ['../tnpJPsi_officialBPHMC25ns.root']
-     #process.TnP_MuonID.InputFileNames = ['../tnpJPsi_officialBPHMC_withAllTagVars.root']
-     #process.TnP_MuonID.InputFileNames = ['../tnpJPsi_officialBPHMC_vertexingTriggersFlags.root']
-     #process.TnP_MuonID.InputFileNames = ['../tnpJPsi_officialBPHMC_OniaTriggersFlags.root']
-     #process.TnP_MuonID.InputFileNames = ['../tnpJPsi_officialBPHMC.root']
-     #process.TnP_MuonID.InputFileNames = ['../tnpJPsi_officialBPHMC_30M.root']
-     #process.TnP_MuonID.InputFileNames = ['../tnpJPsi_officialBPHMC_Mu8.root'] # Mu8 test
-     #process.TnP_MuonID.InputFileNames = ['../tnpJPsi_MC_total.root']
-     #process.TnP_MuonID.InputFileNames = ['root://cmsxrootd.fnal.gov///store/user/lecriste/TnP/JpsiToMuMu_OniaMuonFilter_TuneCUEP8M1_13TeV-pythia8/crab_TnP_MC_request/150710_153845/0000/tnpJPsi_MC_1.root']
-     #process.TnP_MuonID.InputFileNames = ['../tnpJPsi_MC_Monika.root']
-     #process.TnP_MuonID.InputFileNames = ['../tnpJPsi_MC_benchmark_10k.root']
-     #process.TnP_MuonID.InputFileNames = ['../tnpJPsi_MC_Mu8.root']
-     #process.TnP_MuonID.InputFileNames = ['../tnpJPsi_MC_noFilter.root']
-     #process.TnP_MuonID.InputFileNames = ['../tnpJPsi_MC.root']
-     #process.TnP_MuonID.InputFileNames = ['../tnpJPsi_MC_oldMatching.root']
-     #process.TnP_MuonID.InputFileNames = ['../tnpJPsi_MC_oldTriggers.root']
+
 
 if "25ns" in process.TnP_MuonID.InputFileNames[0]:
      mode = "25ns_"
 else: mode = ""
 
-#ALLBINS =  [("plateau_abseta",PLATEAU_ABSETA)]
-#ALLBINS =  [("pt_eta",PT_ETA_BINS)]
-ALLBINS =  [("pt_abseta",PT_ABSETA_BINS)]
-#ALLBINS =  [("pt_abseta_seagull",PT_ABSETA_BINS_SEAGULL), ("pt_abseta_cowboy",PT_ABSETA_BINS_COWBOY)]
-#ALLBINS =  [("pt_abseta_allPairs",PT_ABSETA_BINS_allPairs)]
-#ALLBINS =  [("pt_abseta_notSeparated",PT_ABSETA_BINS_notSeparated)]
-#ALLBINS =  [("pt_abseta_notSeparated",PT_ABSETA_BINS_notSeparated), ("pt_abseta_seagull",PT_ABSETA_BINS_SEAGULL), ("pt_abseta_cowboy",PT_ABSETA_BINS_COWBOY)]
-#ALLBINS =  [("pt_abseta_separated",PT_ABSETA_BINS_allPairs), ("pt_abseta_seagull_separated",PT_ABSETA_BINS_SEAGULL_separated), ("pt_abseta_cowboy_separated",PT_ABSETA_BINS_COWBOY_separated)]
-#ALLBINS =  [("pt_abseta_H4l",PT_ABSETA_BINS_H4l)]
-#ALLBINS =  [("pt_eta2p4_notSeparated",PT_BINS_notSeparated)]
-#ALLBINS =  [("pt_abseta2p4",PT_BINS_ABSETA2p4)]
-#ALLBINS =  [("pt_abseta_notSeparated",PT_ABSETA_BINS_notSeparated),("pt_eta2p4_notSeparated",PT_BINS_notSeparated)]
-#ALLBINS =  [("pt_abseta_notSeparated_allPairs",PT_ABSETA_BINS_notSeparated_allPairs)]
-#ALLBINS =  [("ptTurnOn_abseta",TURNON_ABSETA)]
-#ALLBINS =  [("pt_abseta",PT_ABSETA_BINS), ("plateau_abseta",PLATEAU_ABSETA)]
-#ALLBINS =  [("vtx",VTX_BINS)]
-#ALLBINS =  [("vtx",VTX_BINS_noSoft)]
-#ALLBINS =  [("plateau_abseta",PLATEAU_ABSETA), ("vtx",VTX_BINS), ("eta",ETA_BINS)]
-#ALLBINS =  [("pt_abseta",PT_ABSETA_BINS), ("vtx",VTX_BINS), ("eta",ETA_BINS)]
-#ALLBINS =  [("pt_abseta",PT_ABSETA_BINS), ("vtx",VTX_BINS), ("plateau",PLATEAU_ABSETA)]
-#ALLBINS += [("pt_abseta_wide",PT_ABSETA_WIDE)]
-#ALLBINS =  [("ptPlateau_eta",PLATEAU_ETA)]
+ALLBINS = [("pt_abseta", PT_ABSETA_BINS)]
+
 if "Mu8" in process.TnP_MuonID.InputFileNames[0]:
      ALLBINS =  [("pt_abseta",PT_ABSETA_BINS_Mu8)]
 
