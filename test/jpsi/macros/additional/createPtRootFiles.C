@@ -44,19 +44,21 @@ void createPtRootFiles(){
 
 
   // code set up so that MC file is split in different files for abseta bins
-  const std::vector<std::string> effName = {"Loose2012", "Soft2012", "newSoft2012", "Tight2012"};
-  int iEff = 3;
+  // const std::vector<std::string> effName = {"Loose2012", "Soft2012", "newSoft2012", "Tight2012"};
+  const std::vector<std::string> effName = {"Loose2016", "Loose2016_test"};
+  const int iEff = 0;
   // give number of abseta bin
-  int abseta = 2;
+  const int abseta = 0;
+  const std::vector<std::string> absEtaBin = { "0_0p9", "0p9_1p2", "1p2_2p1", "2p1_2p4" };
 
-  //input files
-  std::stringstream datafile, mcfile;
-  datafile << "/scratch/ikratsch/TnP2012/MuonPOG/official6March2014/changedMass/multiplicity/TnP_MuonID_data_all_" << effName[iEff] << "_pt_abseta" << abseta << "_multiplicity.root";
-  mcfile << "/scratch/ikratsch/TnP2012/MuonPOG/official6March2014/changedMass/multiplicity/TnP_MuonID_signal_mc_" << effName[iEff] <<  "_pt_abseta" << abseta << "_multiplicity.root";
+  // input files
+  const std::string datafile = "/afs/hephy.at/work/t/tmadlener/CMSSW_8_0_12/src/data_rootfiles/TnP_MuonID__data_all__" + effName[iEff] + "_pt_abseta_abseta_" + absEtaBin[abseta] + "_all_pt.root";
+  const std::string mcfile = "/afs/hephy.at/work/t/tmadlener/CMSSW_8_0_12/src/mc_rootfiles/TnP_MuonID__signal_mc__" + effName[iEff] + "_pt_abseta_abseta_" + absEtaBin[abseta] + "_all_pt.root";
 
   //output file
   std::stringstream outputfile;
-  outputfile << "/scratch/ikratsch/TnP2012/MuonPOG/official6March2014/changedMass/multiplicity/MuonID_" << effName[iEff] << "_pt_abseta" << abseta << "_2012_multiplicity.root";
+  // outputfile << "/scratch/ikratsch/TnP2012/MuonPOG/official6March2014/changedMass/multiplicity/MuonID_" << effName[iEff] << "_pt_abseta" << abseta << "_2012_multiplicity.root";
+  outputfile << "/afs/hephy.at/work/t/tmadlener/CMSSW_8_0_12/src/outputfiles/createPTRootFiles_" << effName[iEff] << "_pt_abseta" << abseta << "_test.root";
   TFile *output = new TFile(outputfile.str().c_str(),"RECREATE");
 
   // Name of samples: data and MC
@@ -64,12 +66,13 @@ void createPtRootFiles(){
   //const std::string effSampleName[] = {"MC", "MC"};
   const auto nEffSample = effSampleName.size();
   // Name of trigger: Mu5_Track2, Mu7_Track7
-  const std::vector<std::string> trackName = {"Mu5_Track2", "Mu7_Track7"};
+  // const std::vector<std::string> trackName = {"Mu5_Track2", "Mu7_Track7"};
+  const std::vector<std::string> trackName = {"Mu7p5_Track2"};
   const auto nTrack = trackName.size();
 
   //Declare bins according to efficiency
   //pt_abseta
-  const std::vector<double> bins1 = {2.0, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75, 4.0, 4.5, 5.0, 6.0, 8.0, 10.0, 20.0};
+  const std::vector<double> bins1 = {2.0, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75, 4.0, 4.5, 5.0, 6.0, 8.0, 10.0, 20.0, 30.0, 40.0};
   //double bins1[] = {2.0, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75, 4.0, 4.5, 5.0, 6.0, 8.0, 10.0, 15.0, 20.0};
   //double bins1[] = {2, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75, 4.0, 4.5, 5.0, 5.5, 6.0, 7.0, 9.0, 11.0, 14.0, 17.0, 20.0};
   //double bins1[] = {10, 20, 25, 30, 35, 40, 50, 60, 90, 140, 300, 500};
@@ -102,12 +105,12 @@ void createPtRootFiles(){
     // open input files
     TFile *file;
     if(iEffSample==0){
-      file = open(datafile.str().c_str());
+      file = open(datafile.c_str());
       if(!file) return;
       std:: cout << "Sucessfully opened data file" << std::endl;
     }
     else{
-      file = open(mcfile.str().c_str());
+      file = open(mcfile.c_str());
       if(!file) return;
       std:: cout << "Sucessfully opened MC file"<< std::endl;
     }
@@ -120,7 +123,7 @@ void createPtRootFiles(){
     for(size_t iTrack = 0; iTrack < nTrack; iTrack++){
 
       std::stringstream directory;
-      directory << effName[iEff] << "_pt_abseta_" << trackName[iTrack];
+      directory << effName[iEff] << "_pt_abseta_" << trackName[iTrack] << "_Jpsi";
       //directory << "Soft_pt_abseta";
       TDirectory* dir_run=cd(dir_tpTree, directory.str().c_str());
       if (!dir_run) return;
@@ -130,15 +133,7 @@ void createPtRootFiles(){
       if (!dir_fit_eff) return;
       //std:: cout << "Found fit directory" << std::endl;
 
-      std::string plot;
-      std::stringstream inter;
-      //if(iEffSample==0)
-      //inter << "pt_PLOT_abseta_bin" << abseta << "_&_" << trackName[iTrack] << "_Jpsi_TK_pass_&_tag_" << trackName[iTrack] << "_Jpsi_MU_pass";
-      //else
-      inter << "pt_PLOT_" << trackName[iTrack] << "_Jpsi_TK_pass_&_tag_" << trackName[iTrack] << "_Jpsi_MU_pass";
-      //inter << "pt_PLOT_abseta_bin" << abseta;
-      //inter << "pt_PLOT";
-      plot = inter.str();
+      std::string plot = "pt_PLOT_" + trackName[iTrack] + "_Jpsi_TK_pass_&_tag_" + trackName[iTrack] + "_Jpsi_MU_pass";
 
       for(size_t iBins2 = 0; iBins2 < nBins2-1; iBins2++){
 
@@ -156,11 +151,13 @@ void createPtRootFiles(){
         int N = get_plot->GetN();
         if (N == 0) continue;
 
-        for(size_t iBins1 = 0; iBins1 < nBins1-1; iBins1++){
+        for(int iBins1 = 0; iBins1 < N; iBins1++){
 
           //get values from plot
           double x = 0, y = 0;
-          // double z = get_plot->GetPoint(iBins1, x, y);
+          if (get_plot->GetPoint(iBins1, x, y) != iBins1) {
+            std::cout << "Error while getting point " << iBins1 << " from graph" << std::endl;
+          }
           double err_high = get_plot->GetErrorYhigh(iBins1);
           double err_low = get_plot->GetErrorYlow(iBins1);
           double var_high = get_plot->GetErrorXhigh(iBins1);
@@ -320,6 +317,7 @@ void createPtRootFiles(){
 
   } //iBins2
 
+  output->Close();
 } //void
 
 #ifndef __CINT__
