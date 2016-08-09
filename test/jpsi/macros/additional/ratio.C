@@ -29,13 +29,13 @@ void ratio(){
   //steering variable: 1 = eta, 2 = abseta, 3 = pt, 4 = vertex
   // id = Tight, Loose, Soft
   // separation = "", _seagulls, _cowboys
-  int scenario = 3;
-  std::string id = "Loose";
+  int scenario = 4;
+  std::string id = "Loose2016";
   std::string title = "Loose ID";
   std::string separation = "";
   std::string absetaBin;
-  if(scenario == 3) absetaBin = "1";
-  std::string add = "_2012_highestBinsMerged"; //_2012_highestBinsMerged
+  if(scenario == 3) absetaBin = "3";
+  // std::string add = "_2012_highestBinsMerged"; //_2012_highestBinsMerged
 
   gROOT->SetStyle("Plain");
   //gStyle->SetTitleBorderSize(0);
@@ -58,11 +58,10 @@ void ratio(){
   const std::vector<double> bins1 = {-2.1, -1.6, -1.2, -0.9, -0.6, -0.3, -0.2, 0.2, 0.3, 0.6, 0.9, 1.2, 1.6, 2.1};
 
   //abseta
-  const std::vector<double> bins2 = {0., 0.9, 1.2, 2.1};
+  const std::vector<double> bins2 = {0., 0.9, 1.2, 2.1, 2.4};
 
   //pt
-  const std::vector<double> bins31 = {2.0, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75, 4.0, 4.5, 5.0, 6.0, 8.0, 10.0, 20.0};
-  const std::vector<double> bins3 = {2.0, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75, 4.0, 4.5, 5.0, 6.0, 8.0, 10.0, 15.0, 20.0};
+  const std::vector<double> bins3 = {2.0, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75, 4.0, 4.5, 5.0, 6.0, 8.0, 10.0, 15.0, 20.0, 30.0, 40.0};
 
   //vertex
   const std::vector<double> bins4 = {0.5, 2.5, 4.5, 6.5, 8.5, 10.5, 12.5, 14.5, 16.5, 18.5, 20.5, 22.5, 24.5, 26.5, 28.5, 30.5};
@@ -89,9 +88,11 @@ void ratio(){
     values = "p_{T} > 8 GeV/c";
     bins = bins2;
     x1 = 0;
-    x2 = 2.2;
+    x2 = 2.4;
     y1 = 0.3;
     y2 = 1.3;
+    t2 = 0.6;
+    t4 = 0.7;
     break;
   case 3:
     std::cout << "processing pt" << std::endl;
@@ -99,21 +100,25 @@ void ratio(){
     scen = "pt_abseta";
     if(absetaBin == "0"){
       values = "|#eta| < 0.9";
-      bins = bins31;
+      bins = bins3;
       y2 = 1.2;
       if(id == "Tight") y2 = 1.4;
-    }else if(absetaBin == "1"){
+    } else if(absetaBin == "1"){
       values = "0.9 < |#eta| < 1.2";
       bins = bins3;
       y2 = 1.7;
-    }else if(absetaBin == "2"){
+    } else if(absetaBin == "2"){
       values = "1.2 < |#eta| < 2.1";
+      bins = bins3;
+      y2 = 1.2;
+    } else if (absetaBin == "3") {
+      values = "2.1 < |#eta| < 2.4";
       bins = bins3;
       y2 = 1.2;
     }
     x1 = 1;
     x2 = 21;
-    y1 = 0.9;
+    y1 = 0.75;
     t2 = 0.8;
     hy2 = 1.1;
     hy1 = 0.;
@@ -126,7 +131,7 @@ void ratio(){
     std::cout << "processing vertex" << std::endl;
     xtitle = "number of vertices";
     scen = "vtx";
-    values = "|#eta| < 2.1, p_{T} > 8 GeV/c";
+    values = "|#eta| < 2.4, p_{T} > 8 GeV/c";
     bins = bins4;
     x1 = 0.;
     x2 = 31.;
@@ -139,7 +144,8 @@ void ratio(){
   }
 
   std::stringstream file;
-  file << "/scratch/ikratsch/TnP2012/MuonPOG/official6March2014/changedMass/MuonID_" << id.c_str() << "2012_" << scen.c_str() << absetaBin.c_str() << separation.c_str() << add.c_str() << ".root"; //_2012
+  // file << "/scratch/ikratsch/TnP2012/MuonPOG/official6March2014/changedMass/MuonID_" << id.c_str() << "2012_" << scen.c_str() << absetaBin.c_str() << separation.c_str() << add.c_str() << ".root"; //_2012
+  file << "/afs/hephy.at/work/t/tmadlener/CMSSW_8_0_12/src/outputfiles/MuonID_" << id << "_" << scen << absetaBin << ".root";
   TFile *f = TFile::Open(file.str().c_str());
 
   TGraphAsymmErrors *g_data = (TGraphAsymmErrors *) f->Get("DATA");
@@ -179,12 +185,12 @@ void ratio(){
   latex->SetNDC(kTRUE);
   latex->SetTextSize(0.05);
   double left = 0.12, top = 0.92, /*bottom = 0.23,*/ right = 0.8;
-  latex->DrawLatex(left,top,"CMS preliminary             Run 2012");
+  latex->DrawLatex(left,top,"CMS preliminary             Run 2016");
 
   TLatex *latex1 = new TLatex();
   latex1->SetNDC(kTRUE);
   latex1->SetTextSize(0.05);
-  latex1->DrawLatex(right,top,"#sqrt{s} = 8 TeV");
+  latex1->DrawLatex(right,top,"#sqrt{s} = 13 TeV");
 
   TLine *line = new TLine();
   line->SetLineStyle(3);
@@ -255,8 +261,9 @@ void ratio(){
   pad2->SetGridy();
 
   c->cd();
+  std::string baseDir = "/afs/hephy.at/work/t/tmadlener/CMSSW_8_0_12/src/outputfiles/";
   std::stringstream name;
-  name << "Figures/Approval/" << id.c_str() << "ID_" << scen.c_str() << absetaBin.c_str() << separation.c_str() << "_2012.pdf";
+  name << baseDir << "Figures/Approval/" << id.c_str() << "ID_" << scen.c_str() << absetaBin.c_str() << separation.c_str() << "_2016.pdf";
   c->SaveAs(name.str().c_str());
 }
 

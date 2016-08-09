@@ -48,7 +48,7 @@ void createPtRootFiles(){
   const std::vector<std::string> effName = {"Loose2016", "Loose2016_test"};
   const int iEff = 0;
   // give number of abseta bin
-  const int abseta = 0;
+  const int abseta = 3;
   const std::vector<std::string> absEtaBin = { "0_0p9", "0p9_1p2", "1p2_2p1", "2p1_2p4" };
 
   // input files
@@ -58,7 +58,7 @@ void createPtRootFiles(){
   //output file
   std::stringstream outputfile;
   // outputfile << "/scratch/ikratsch/TnP2012/MuonPOG/official6March2014/changedMass/multiplicity/MuonID_" << effName[iEff] << "_pt_abseta" << abseta << "_2012_multiplicity.root";
-  outputfile << "/afs/hephy.at/work/t/tmadlener/CMSSW_8_0_12/src/outputfiles/createPTRootFiles_" << effName[iEff] << "_pt_abseta" << abseta << "_test.root";
+  outputfile << "/afs/hephy.at/work/t/tmadlener/CMSSW_8_0_12/src/outputfiles/MuonID_" << effName[iEff] << "_pt_abseta" << abseta << ".root";
   TFile *output = new TFile(outputfile.str().c_str(),"RECREATE");
 
   // Name of samples: data and MC
@@ -72,7 +72,7 @@ void createPtRootFiles(){
 
   //Declare bins according to efficiency
   //pt_abseta
-  const std::vector<double> bins1 = {2.0, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75, 4.0, 4.5, 5.0, 6.0, 8.0, 10.0, 20.0, 30.0, 40.0};
+  const std::vector<double> bins1 = {2.0, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75, 4.0, 4.5, 5.0, 6.0, 8.0, 10.0, 15.0, 20.0, 30.0, 40.0};
   //double bins1[] = {2.0, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75, 4.0, 4.5, 5.0, 6.0, 8.0, 10.0, 15.0, 20.0};
   //double bins1[] = {2, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75, 4.0, 4.5, 5.0, 5.5, 6.0, 7.0, 9.0, 11.0, 14.0, 17.0, 20.0};
   //double bins1[] = {10, 20, 25, 30, 35, 40, 50, 60, 90, 140, 300, 500};
@@ -192,8 +192,8 @@ void createPtRootFiles(){
         //fill TGraphsAsymmErrors
         //fill with Mu5_Track2 for pt < 9 GeV - former 7 GeV
         //if(!isZero(values[iEffSample][0][iBins1][iBins2].eff)){
-        if(bins1[iBins1] < 8 && !isZero(values[iEffSample][0][iBins1][iBins2].eff)){
-          if((abseta == 0 && bins1[iBins1] >= 3.5) || (abseta == 1 && bins1[iBins1] >= 2.5) || (abseta == 2 && bins1[iBins1] >= 2.0)){
+        if(/*bins1[iBins1] < 8 &&*/ !isZero(values[iEffSample][0][iBins1][iBins2].eff)){
+          if((abseta == 0 && bins1[iBins1] >= 3.5) || (abseta == 1 && bins1[iBins1] >= 2.5) || (abseta == 2 && bins1[iBins1] >= 2.0)) {
             // only tight
             //if((abseta == 0 && bins1[iBins1] >= 3.5) || (abseta == 1 && bins1[iBins1] >= 3.0) || (abseta == 2 && bins1[iBins1] >= 2.0)){
             graph->SetPoint(points, values[iEffSample][0][iBins1][iBins2].var, values[iEffSample][0][iBins1][iBins2].eff);
@@ -209,17 +209,17 @@ void createPtRootFiles(){
           }
         }
         // fill with Mu7_Track7 for pt > 9 GeV - former 7 GeV
-        else if(bins1[iBins1] >= 8 && !isZero(values[iEffSample][1][iBins1][iBins2].eff)){
-          graph->SetPoint(points, values[iEffSample][1][iBins1][iBins2].var, values[iEffSample][1][iBins1][iBins2].eff);
-          graph->SetPointError(points,
-                               values[iEffSample][1][iBins1][iBins2].var_low, values[iEffSample][1][iBins1][iBins2].var_high,
-                               values[iEffSample][1][iBins1][iBins2].eff_low, values[iEffSample][1][iBins1][iBins2].eff_high);
-          std::cout << effName[iEff] << " " << effSampleName[iEffSample] << " Mu7_Track7 " << points << " ptbin = "  << iBins1
-                    << " mean = " << values[iEffSample][1][iBins1][iBins2].var << " eff = " << values[iEffSample][1][iBins1][iBins2].eff
-                    << " low = " << values[iEffSample][1][iBins1][iBins2].eff_low << " high = " << values[iEffSample][1][iBins1][iBins2].eff_high
-                    << std::endl;
-          points++;
-        }
+        // else if(bins1[iBins1] >= 8 && !isZero(values[iEffSample][1][iBins1][iBins2].eff)){
+        //   graph->SetPoint(points, values[iEffSample][1][iBins1][iBins2].var, values[iEffSample][1][iBins1][iBins2].eff);
+        //   graph->SetPointError(points,
+        //                        values[iEffSample][1][iBins1][iBins2].var_low, values[iEffSample][1][iBins1][iBins2].var_high,
+        //                        values[iEffSample][1][iBins1][iBins2].eff_low, values[iEffSample][1][iBins1][iBins2].eff_high);
+        //   std::cout << effName[iEff] << " " << effSampleName[iEffSample] << " Mu7_Track7 " << points << " ptbin = "  << iBins1
+        //             << " mean = " << values[iEffSample][1][iBins1][iBins2].var << " eff = " << values[iEffSample][1][iBins1][iBins2].eff
+        //             << " low = " << values[iEffSample][1][iBins1][iBins2].eff_low << " high = " << values[iEffSample][1][iBins1][iBins2].eff_high
+        //             << std::endl;
+        //   points++;
+        // }
 
       } // iBins1
 
@@ -248,7 +248,7 @@ void createPtRootFiles(){
         err_high_ratio = 0,
         mean_var = 0;
 
-      if(bins1[iBins1] < 8 && !isZero(values[1][0][iBins1][iBins2].eff)){ // 7 GeV
+      if(/*bins1[iBins1] < 8 &&*/ !isZero(values[1][0][iBins1][iBins2].eff)){ // 7 GeV
         if((abseta == 0 && bins1[iBins1] >= 3.5) || (abseta == 1 && bins1[iBins1] >= 2.5) || (abseta == 2 && bins1[iBins1] >= 2.0)){
           // only tight
           //if((abseta == 0 && bins1[iBins1] >= 3.5) || (abseta == 1 && bins1[iBins1] >= 3.0) || (abseta == 2 && bins1[iBins1] >= 2.0)){
@@ -263,16 +263,16 @@ void createPtRootFiles(){
           // }
         }
       }
-      else{
-        eff_ratio = values[0][1][iBins1][iBins2].eff / values[1][1][iBins1][iBins2].eff;
-        err_low_ratio = eff_ratio*
-          TMath::Sqrt(TMath::Power(values[0][1][iBins1][iBins2].eff_low/values[0][1][iBins1][iBins2].eff,2)
-                      + TMath::Power(values[1][1][iBins1][iBins2].eff_low/values[1][1][iBins1][iBins2].eff,2));
-        err_high_ratio = eff_ratio*
-          TMath::Sqrt(TMath::Power(values[0][1][iBins1][iBins2].eff_high/values[0][1][iBins1][iBins2].eff,2)
-                      + TMath::Power(values[1][1][iBins1][iBins2].eff_high/values[1][1][iBins1][iBins2].eff,2));
-        mean_var = (values[0][1][iBins1][iBins2].var + values[1][1][iBins1][iBins2].var)/2;
-      }
+      // else{
+      //   eff_ratio = values[0][1][iBins1][iBins2].eff / values[1][1][iBins1][iBins2].eff;
+      //   err_low_ratio = eff_ratio*
+      //     TMath::Sqrt(TMath::Power(values[0][1][iBins1][iBins2].eff_low/values[0][1][iBins1][iBins2].eff,2)
+      //                 + TMath::Power(values[1][1][iBins1][iBins2].eff_low/values[1][1][iBins1][iBins2].eff,2));
+      //   err_high_ratio = eff_ratio*
+      //     TMath::Sqrt(TMath::Power(values[0][1][iBins1][iBins2].eff_high/values[0][1][iBins1][iBins2].eff,2)
+      //                 + TMath::Power(values[1][1][iBins1][iBins2].eff_high/values[1][1][iBins1][iBins2].eff,2));
+      //   mean_var = (values[0][1][iBins1][iBins2].var + values[1][1][iBins1][iBins2].var)/2;
+      // }
 
       double x_high = 0, x_low = 0;
       for (size_t i = 0; i < nBins1-1; i++){
