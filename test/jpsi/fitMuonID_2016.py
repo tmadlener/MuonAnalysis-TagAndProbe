@@ -17,7 +17,6 @@ process = cms.Process("TagProbe")
 
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('FWCore.MessageService.MessageLogger_cfi')
-process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 
 process.source = cms.Source("EmptySource")
 
@@ -32,7 +31,7 @@ Template = cms.EDAnalyzer("TagProbeFitTreeAnalyzer",
 
     Variables = cms.PSet(
         mass = cms.vstring("Tag-muon Mass", "2.9", "3.3", "GeV/c^{2}"), #2.8-3.35
-        p  = cms.vstring("muon p", "0", "1000", "GeV/c"),
+        # p  = cms.vstring("muon p", "0", "1000", "GeV/c"), # unused?
         pt = cms.vstring("muon p_{T}", "0", "1000", "GeV/c"),
         eta = cms.vstring("muon #eta", "-2.5", "2.5", ""),
         abseta = cms.vstring("muon |#eta|", "0", "2.5", ""),
@@ -43,7 +42,7 @@ Template = cms.EDAnalyzer("TagProbeFitTreeAnalyzer",
         #
         pair_pt = cms.vstring("dimuon p_{T}", "0", "1000", "GeV/c"),
         pair_absrapidity = cms.vstring("dimuon |y|", "0", "2.5", ""),
-        pair_rapidity = cms.vstring("dimuon y", "-2.5", "2.5", ""), # only rap present in 2016 TnP
+        # pair_rapidity = cms.vstring("dimuon y", "-2.5", "2.5", ""), # only rap present in 2016 TnP # unused?
         pair_dphiVtxTimesQ = cms.vstring("q1 * (#phi1-#phi2)", "-6", "6", ""),
         pair_drM1   = cms.vstring("#Delta R(Station 1)", "-99999", "999999", "rad"),
         pair_distM1 = cms.vstring("dist(Station 1)", "-99999", "999999", "cm"),
@@ -51,19 +50,20 @@ Template = cms.EDAnalyzer("TagProbeFitTreeAnalyzer",
         pair_probeMultiplicity = cms.vstring("multiplicity","0","99",""),
         dB = cms.vstring("dB", "-1000", "1000", ""),
         dzPV = cms.vstring("dzPV", "-1000", "1000", ""),
-        dxyBS = cms.vstring("dxyBS", "-1000", "1000", ""),
-        tkValidHits = cms.vstring("track.numberOfValidHits", "-1", "999", ""),
+        # dxyBS = cms.vstring("dxyBS", "-1000", "1000", ""), # unused?
+        # tkValidHits = cms.vstring("track.numberOfValidHits", "-1", "999", ""), # unused?
         tkTrackerLay = cms.vstring("track.hitPattern.trackerLayersWithMeasurement", "-1", "999", ""),
-        tkValidPixelHits = cms.vstring("track.hitPattern.numberOfValidPixelHits", "-1", "999", ""),
+        # tkValidPixelHits = cms.vstring("track.hitPattern.numberOfValidPixelHits", "-1", "999", ""), # unused?
         tkPixelLay = cms.vstring("track.hitPattern.pixelLayersWithMeasurement", "-1", "999", ""),
         tkChi2 = cms.vstring("track.normalizedChi2", "-1", "999", ""),
-        numberOfMatchedStations = cms.vstring("numberOfMatchedStations", "-1", "99", ""),
+        # numberOfMatchedStations = cms.vstring("numberOfMatchedStations", "-1", "99", ""), # unused?
         glbChi2 = cms.vstring("global.normalizedChi2", "-9999", "9999", ""),
-        glbValidMuHits = cms.vstring("globalTrack.numberOfValidMuonHits", "-1", "9999", ""),
+        # glbValidMuHits = cms.vstring("globalTrack.numberOfValidMuonHits", "-1", "9999", ""), # unused?
         # caloComp = cms.vstring("caloCompatibility","-1","5",""),
-        caloCompatibility = cms.vstring("caloCompatibility", "-1", "5", ""), # renamed in 2016 TnP
+        # caloCompatibility = cms.vstring("caloCompatibility", "-1", "5", ""), # renamed in 2016 TnP # unused?
         # Added for mediumVar
         # validFraction = cms.vstring("innerTrack.validFraction","-9999","9999",""),
+         tkHitFract = cms.vstring("innerTrack.validFraction", "-9999", "9999" ,""),
         # chi2LPosition = cms.vstring("combinedQuality.chi2LocalPosition","-9999","9999",""),
         chi2LocPos = cms.vstring("combinedQuality.chi2LocalPosition", "-9999", "9999", ""), # renamed in 2016 TnP
         tkKink = cms.vstring("combinedQuality.trkKink","-9999","9999",""),
@@ -72,10 +72,10 @@ Template = cms.EDAnalyzer("TagProbeFitTreeAnalyzer",
         # tracking efficiency
         tk_deltaR   = cms.vstring("Match #Delta R",    "0", "1000", ""),
         tk_deltaEta = cms.vstring("Match #Delta #eta", "0", "1000", ""),
-        tk_deltaR_NoJPsi   = cms.vstring("Unmatch #Delta R",    "0", "1000", ""),
-        tk_deltaEta_NoJPsi = cms.vstring("Unmatch #Delta #eta", "0", "1000", ""),
-        tk_deltaR_NoBestJPsi   = cms.vstring("Unmatch #Delta R",    "0", "1000", ""),
-        tk_deltaEta_NoBestJPsi = cms.vstring("Unmatch #Delta #eta", "0", "1000", ""),
+        # tk_deltaR_NoJPsi   = cms.vstring("Unmatch #Delta R",    "0", "1000", ""), # unused?
+        # tk_deltaEta_NoJPsi = cms.vstring("Unmatch #Delta #eta", "0", "1000", ""), # unused?
+        # tk_deltaR_NoBestJPsi   = cms.vstring("Unmatch #Delta R",    "0", "1000", ""), # unused?
+        # tk_deltaEta_NoBestJPsi = cms.vstring("Unmatch #Delta #eta", "0", "1000", ""), # unused?
         #
         weight = cms.vstring("weight","0","10","") # There is no problem by defining more variables and categories than are present in the TTree as long as they are not used in the Efficiency calculations.
     ),
@@ -138,36 +138,19 @@ Template = cms.EDAnalyzer("TagProbeFitTreeAnalyzer",
         ),
 
    Expressions = cms.PSet(
-     LooseVar = cms.vstring("LooseVar", "PF==1 && (Glb==1 || TM==1) ", "PF", "Glb", "TM"),
      Loose2015Var = cms.vstring("Loose2015Var", "PF==1", "PF"),
-     Loose2016Var = cms.vstring("Loose2016Var", "PF == 1 && (Glb == 1 || TM == 1)", "PF", "Glb", "TM"), # Loose is present in TTrees!
-     oldSoftVar = cms.vstring("oldSoftVar", "TMOST ==1 && tkTrackerLay > 5 && tkPixelLay > 1 && tkChi2 < 1.8 && abs(dzPV) < 30 && abs(dB) < 3", "TMOST","tkTrackerLay", "tkPixelLay", "tkChi2", "dzPV", "dB"),
-     # without chi2 cut
-     #oldSoftVar = cms.vstring("oldSoftVar", "TMOST ==1 && tkTrackerLay > 5 && tkPixelLay > 1 && abs(dzPV) < 30 && abs(dB) < 3", "TMOST","tkTrackerLay", "tkPixelLay", "dzPV", "dB"),
-     #changed cuts
-     #oldSoftVar = cms.vstring("oldSoftVar", "TMOST ==1", "TMOST"),
-     #oldSoftVar = cms.vstring("oldSoftVar", "TMOST ==1 && abs(dzPV) < 20", "TMOST", "dzPV"),
-     #oldSoftVar = cms.vstring("oldSoftVar", "TMOST ==1 && abs(dzPV) < 20 && abs(dB) < 0.3", "TMOST", "dzPV", "dB"),
-     #oldSoftVar = cms.vstring("oldSoftVar", "TMOST ==1 && abs(dzPV) < 20 && abs(dB) < 0.3 && tkPixelLay > 0", "TMOST", "dzPV", "dB", "tkPixelLay"),
-     #oldSoftVar = cms.vstring("oldSoftVar", "TMOST ==1 && abs(dzPV) < 20 && abs(dB) < 0.3 && tkPixelLay > 0 && tkTrackerLay > 5", "TMOST", "dzPV", "dB", "tkPixelLay", "tkTrackerLay"),
-     #MediumVar = cms.vstring("MediumVar", "Loose==1 && validFraction > 0.8 && ((Glb==1 && glbChi2 < 3 && chi2LPosition < 12 && tkKink < 20 && segmComp > 0.303) || segmComp> 0.451)", "Loose", "validFraction", "Glb", "glbChi2", "chi2LPosition", "tkKink", "segmComp"), # already defined in the tree
-     MediumVar = cms.vstring("MediumVar", "Medium==1", "Medium"),
-     TightVar = cms.vstring("TightVar", "PF==1 && Glb==1 && tkChi2 < 10 && glbValidMuHits > 0 && numberOfMatchedStations > 1 && abs(dB) < 0.2 && abs(dzPV) < 0.5 && tkValidPixelHits > 0 && tkTrackerLay > 5", "PF", "Glb", "tkChi2", "glbValidMuHits", "numberOfMatchedStations", "dB",  "dzPV", "tkValidPixelHits", "tkTrackerLay" ),
-     Tight2012_zIPCutVar = cms.vstring("Tight2012_zIPCut", "Tight2012 == 1 && abs(dzPV) < 0.5", "Tight2012", "dzPV"),
-     # new SoftMuon ID 2012
-     SoftVar = cms.vstring("SoftVar", "TMOST == 1 && tkTrackerLay > 5 && tkPixelLay > 0 && abs(dzPV) < 20 && abs(dB) < 0.3 && Track_HP == 1", "TMOST","tkTrackerLay", "tkPixelLay", "dzPV", "dB", "Track_HP"),
-     ),
+        Loose2016Var = cms.vstring("Loose2016Var", "Loose == 1", "Loose"), # Loose is present in TTrees! Doing it this way, in order to have a consistent definition of the IDs (cuts) below
+     Medium2016Var = cms.vstring("Medium2016Var", "Loose == 1 && tkHitFract > 0.49 && ((Glb == 1 && glbChi2 < 3 && chi2LocPos < 12. && tkKink < 20. && segmentCompatibility > 3.03) || segmentCompatibility > 0.451)",
+                                 "Loose", "tkHitFract", "Glb", "glbChi2", "chi2LocPos", "tkKink", "segmentCompatibility"),
+     Soft2016Var = cms.vstring("Soft2016Var", "TMOST == 1 && tkTrackerLay > 5 && tkPixelLay > 0 && abs(dzPV) < 20. && abs(dB) < 0.3",
+                               "TMOST", "tkTrackerLay", "tkPixelLay", "dzPV", "dB"),
+   ),
 
    Cuts = cms.PSet(
-          Loose2012 = cms.vstring("Loose", "LooseVar", "0.5"),
           Loose2015 = cms.vstring("Loose2015", "Loose2015Var", "0.5"),
           Loose2016 = cms.vstring("Loose2016", "Loose2016Var", "0.5"),
-          Loose2016_test = cms.vstring("Loose2016", "Loose", "0.5"),
-          Medium2015 = cms.vstring("Medium2015", "MediumVar", "0.5"),
-          Tight2012_def = cms.vstring("Tight", "TightVar", "0.5"), # renamed to avoid emitting of warning of being already in set
-          Tight2012_zIPCut = cms.vstring("Tight2012_zIPCut", "Tight2012_zIPCutVar", "0.5"),
-          oldSoft2012 = cms.vstring("oldSoft", "oldSoftVar", "0.5"),
-          Soft2012 = cms.vstring("Soft", "SoftVar", "0.5"),
+          Medium2016 = cms.vstring("Medium2016", "Medium2016Var", "0.5"),
+          Soft2016 = cms.vstring("Soft2016", "Soft2016Var", "0.5"),
           ),
 
    PDFs = cms.PSet(
@@ -250,9 +233,18 @@ PT_ABSETA_BINS = cms.PSet(   SEPARATED,
                           #pt = pT_binning_2012,
                           #pt = pT_binning_2015,
                           #pt = pT_binning_47ipb,
-                          pt = pT_binning_25ns,
+                         pt = pT_binning_2015,
+                         # pt = cms.vdouble(2.0, 2.5, 2.75, 3.0, 3.25), # TODO
+                         # pt = cms.vdouble(3.25, 3.5, 3.75, 4.0, 4.5), # TODO
+                         # pt = cms.vdouble(4.5, 5.0, 6.0),
+                         # pt = cms.vdouble(6.0, 8.0, 10),
+                         # pt = cms.vdouble(10.0, 15.0, 20.0, 30.0, 40.0),
                           #abseta = cms.vdouble(0.0,0.9,1.2,2.1) # 2012
-                          abseta = abseta_binning_47ipb
+                         # abseta = abseta_binning_47ipb
+                         abseta = cms.vdouble(0, 0.9), # "split" input file into abseta bins, this one does not fit into 32 G of RAM (data) when used with all pT bins!
+                         # abseta = cms.vdouble(0.9, 1.2), # "split" input file into abseta bins
+                         # abseta = cms.vdouble(1.2, 2.1), # "split" input file into abseta bins
+                         # abseta = cms.vdouble(2.1, 2.4), # "split" input file into abseta bins
                        )
 
 PT_ABSETA_BINS_Mu8 = cms.PSet(   SEPARATED,
@@ -378,8 +370,8 @@ PT_BINS = cms.PSet(       SEPARATED,
                           ) # check abseta var limits
 
 VTX_BINS = cms.PSet(      SEPARATED,
-                          abseta = cms.vdouble(0.0, 2.1),
-                          pt     = cms.vdouble(8.0, 20.0),
+                          abseta = cms.vdouble(0.0, 2.4),
+                          pt     = cms.vdouble(8.0, 40.0),
                           tag_nVertices = cms.vdouble(0.5,2.5,4.5,6.5,8.5,10.5,12.5,14.5,16.5,18.5,20.5,22.5,24.5,26.5,28.5,30.5)
                           #tag_nVerticesDA = cms.vdouble(0.5,2.5,4.5,6.5,8.5,10.5,12.5,14.5,16.5,18.5,20.5,22.5,24.5,26.5,28.5,30.5)
                           )
@@ -397,7 +389,7 @@ ETA_BINS = cms.PSet(      SEPARATED,
 
 PLATEAU_ABSETA = cms.PSet(SEPARATED,
                           abseta = cms.vdouble(0.0, 0.9, 1.2, 2.1, 2.4),
-                          pt     = cms.vdouble(8.0, 20.0),
+                          pt     = cms.vdouble(8.0, 40.0),
                           )
 
 PLATEAU_ETA = cms.PSet(   SEPARATED,
@@ -418,8 +410,18 @@ TURNON_ABSETA = cms.PSet( SEPARATED,
 # Prefix should be "./" only
 PREFIX="/afs/cern.ch/work/l/lecriste/TnP/Ilse/CMSSW_5_3_22/test/"
 process.TnP_MuonID = Template.clone(
-     # InputFileNames = cms.vstring('/scratch/tmadlener/data/TagAndProbe/2016/TnPTree_80X_Run2016C_v2_GoldenJSON_Run275377to276097.root'), # Run 2016C Charmonium tree
-     InputFileNames = cms.vstring('/scratch/tmadlener/data/TagAndProbe/2016/TnPTree_80X_TuneCUEP8M1_withNVtxWeights.root'),
+     InputFileNames = cms.vstring('/scratch/tmadlener/data/TagAndProbe/2016/TnPTree_80X_Run2016C_v2_GoldenJSON_Run275377to276097.root', # Run 2016 C Charmonium tree
+                                  '/scratch/tmadlener/data/TagAndProbe/2016/TnPTree_80X_Run2016B_v2_GoldenJSON_Run271036to275376.root'), # Run 2016 B Charmonium tree
+          # '/scratch/tmadlener/data/TagAndProbe/2016/subTree_abseta_0_0p9_Run2016B_v2_GoldenJSON_Run271036to275376.root', # Run 2016 B abseta skimmed
+          # '/scratch/tmadlener/data/TagAndProbe/2016/subTree_abseta_0_0p9_Run2016C_v2_GoldenJSON_Run275377to276097.root'), # Run 2016 C abseta skimmed
+          # '/scratch/tmadlener/data/TagAndProbe/2016/subTree_abseta_0p9_1p2_Run2016B_v2_GoldenJSON_Run271036to275376.root', # Run 2016 B abseta skimmed
+          # '/scratch/tmadlener/data/TagAndProbe/2016/subTree_abseta_0p9_1p2_Run2016C_v2_GoldenJSON_Run275377to276097.root'), # Run 2016 C abseta skimmed
+          # '/scratch/tmadlener/data/TagAndProbe/2016/subTree_abseta_1p2_2p1_Run2016B_v2_GoldenJSON_Run271036to275376.root', # Run 2016 B abseta skimmed
+          # '/scratch/tmadlener/data/TagAndProbe/2016/subTree_abseta_1p2_2p1_Run2016C_v2_GoldenJSON_Run275377to276097.root'), # Run 2016 C abseta skimmed
+          # '/scratch/tmadlener/data/TagAndProbe/2016/subTree_abseta_2p1_2p4_Run2016B_v2_GoldenJSON_Run271036to275376.root', # Run 2016 B abseta skimmed
+          # '/scratch/tmadlener/data/TagAndProbe/2016/subTree_abseta_2p1_2p4_Run2016C_v2_GoldenJSON_Run275377to276097.root'), # Run 2016 C abseta skimmed
+
+     # InputFileNames = cms.vstring('/scratch/tmadlener/data/TagAndProbe/2016/TnPTree_80X_TuneCUEP8M1_withNVtxWeights.root'), # MC is replaced below
 
      InputTreeName = cms.string("fitter_tree"),
      InputDirectoryName = cms.string("tpTree"),
@@ -429,7 +431,8 @@ process.TnP_MuonID = Template.clone(
 )
 
 
-IDS = ["Loose2016", "Loose2016_test"]
+# IDS = ["Loose2016", "Loose2016_test", "Medium2016", "Soft2016"]
+IDS = ["Medium2016"]#, "Loose2016_test"]
 
 TRIGS = [ (2,'Mu7p5_Track2_Jpsi') ]
 if "Mu8" in process.TnP_MuonID.InputFileNames[0]:
@@ -439,7 +442,8 @@ if "Mu8" in process.TnP_MuonID.InputFileNames[0]:
 UnbinnedVars = cms.vstring("mass")
 if "mc" in scenario:
      UnbinnedVars = cms.vstring("mass","weight")
-     process.TnP_MuonID.InputFileNames = ['../tnpJPsi_officialBPHMC25ns_withMu25_withNVtxWeights.root']
+     # process.TnP_MuonID.InputFileNames = ['../tnpJPsi_officialBPHMC25ns_withMu25_withNVtxWeights.root']
+     process.TnP_MuonID.InputFileNames = ['/scratch/tmadlener/data/TagAndProbe/2016/TnPTree_80X_TuneCUEP8M1_withnVtxWeights.root']
 
 
 if "25ns" in process.TnP_MuonID.InputFileNames[0]:
@@ -447,11 +451,12 @@ if "25ns" in process.TnP_MuonID.InputFileNames[0]:
 else: mode = ""
 
 ALLBINS = [("pt_abseta", PT_ABSETA_BINS)]
+# ALLBINS = [("plateau_abseta", PLATEAU_ABSETA)]
+# ALLBINS = [("vtx", VTX_BINS)]
 
-if "Mu8" in process.TnP_MuonID.InputFileNames[0]:
-     ALLBINS =  [("pt_abseta",PT_ABSETA_BINS_Mu8)]
+# if "Mu8" in process.TnP_MuonID.InputFileNames[0]:
+#      ALLBINS =  [("pt_abseta",PT_ABSETA_BINS_Mu8)]
 
-triggerEff = True
 triggerEff = False
 Mu25_test = False
 #Mu25_test = True
@@ -487,8 +492,8 @@ for ID in IDS:
                if "pt" in X or "vtx" in X:
                     TRIGLABEL="_"+TRIG
                else:
-                    #if TRIG != "Mu7p5_Track2_Jpsi": continue # use only one trigger except for turn-on ("turn-on" = ""pt_" in X")
-                    if TRIG != "Mu7p5_Track7_Jpsi" and TRIG != "Mu8": continue # use only one trigger except for turn-on ("turn-on" = ""pt_" in X")
+                    if TRIG != "Mu7p5_Track2_Jpsi": continue # use only one trigger except for turn-on ("turn-on" = ""pt_" in X")
+                    # if TRIG != "Mu7p5_Track7_Jpsi" and TRIG != "Mu8": continue # use only one trigger except for turn-on ("turn-on" = ""pt_" in X")
                DEN = B.clone()
                if hasattr(DEN, "pt"):
                     DEN.pt = cms.vdouble(*[i for i in B.pt if i >= PTMIN])
@@ -510,7 +515,7 @@ for ID in IDS:
                #setattr(DEN_forSoftID, "TM", cms.vstring("pass"))
                #if "calomu" in scenario: DEN_forSoftID.Calo = cms.vstring("pass")
                setattr(module.Efficiencies, ID+"_"+X+TRIGLABEL, cms.PSet(
-                         EfficiencyCategoryAndState = cms.vstring(ID,"above"),     # ??
+                         EfficiencyCategoryAndState = cms.vstring(ID,"above"),     # change to above when using a cut!!!
                          UnbinnedVariables = UnbinnedVars,
                          BinnedVariables = DEN_forSoftID,
                          BinToPDFmap = cms.vstring("signalPlusBkg")
