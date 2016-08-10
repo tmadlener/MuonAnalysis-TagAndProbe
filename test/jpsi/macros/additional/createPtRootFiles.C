@@ -193,20 +193,15 @@ void createPtRootFiles(){
         //fill with Mu5_Track2 for pt < 9 GeV - former 7 GeV
         //if(!isZero(values[iEffSample][0][iBins1][iBins2].eff)){
         if(/*bins1[iBins1] < 8 &&*/ !isZero(values[iEffSample][0][iBins1][iBins2].eff)){
-          if((abseta == 0 && bins1[iBins1] >= 3.5) || (abseta == 1 && bins1[iBins1] >= 2.5) || (abseta == 2 && bins1[iBins1] >= 2.0)) {
-            // only tight
-            //if((abseta == 0 && bins1[iBins1] >= 3.5) || (abseta == 1 && bins1[iBins1] >= 3.0) || (abseta == 2 && bins1[iBins1] >= 2.0)){
-            graph->SetPoint(points, values[iEffSample][0][iBins1][iBins2].var, values[iEffSample][0][iBins1][iBins2].eff);
-            graph->SetPointError(points,
-                                 values[iEffSample][0][iBins1][iBins2].var_low, values[iEffSample][0][iBins1][iBins2].var_high,
-                                 values[iEffSample][0][iBins1][iBins2].eff_low, values[iEffSample][0][iBins1][iBins2].eff_high);
-            std::cout << effName[iEff] << " " << effSampleName[iEffSample] << " Mu5_Track2 " << points <<" ptbin = "  << iBins1
-                      << " mean = " << values[iEffSample][0][iBins1][iBins2].var << " eff = " << values[iEffSample][0][iBins1][iBins2].eff
-                      << " low = " << values[iEffSample][0][iBins1][iBins2].eff_low << " high = " << values[iEffSample][0][iBins1][iBins2].eff_high
-                      << std::endl;
-            points++;
-            // }
-          }
+          graph->SetPoint(points, values[iEffSample][0][iBins1][iBins2].var, values[iEffSample][0][iBins1][iBins2].eff);
+          graph->SetPointError(points,
+                               values[iEffSample][0][iBins1][iBins2].var_low, values[iEffSample][0][iBins1][iBins2].var_high,
+                               values[iEffSample][0][iBins1][iBins2].eff_low, values[iEffSample][0][iBins1][iBins2].eff_high);
+          std::cout << effName[iEff] << " " << effSampleName[iEffSample] << " Mu5_Track2 " << points <<" ptbin = "  << iBins1
+                    << " mean = " << values[iEffSample][0][iBins1][iBins2].var << " eff = " << values[iEffSample][0][iBins1][iBins2].eff
+                    << " low = " << values[iEffSample][0][iBins1][iBins2].eff_low << " high = " << values[iEffSample][0][iBins1][iBins2].eff_high
+                    << std::endl;
+          points++;
         }
         // fill with Mu7_Track7 for pt > 9 GeV - former 7 GeV
         // else if(bins1[iBins1] >= 8 && !isZero(values[iEffSample][1][iBins1][iBins2].eff)){
