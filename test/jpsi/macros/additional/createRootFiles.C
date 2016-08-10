@@ -47,7 +47,7 @@ void createRootFiles(){
   const std::vector<std::string> effName = {"Loose2016"};
   int iEff = 0;
   const std::vector<std::string> scenario = {"_eta", "_vtx", "_plateau_abseta"};
-  int iScen = 1;
+  int iScen = 0;
 
   //input files
   std::string datafile = "/afs/hephy.at/work/t/tmadlener/CMSSW_8_0_12/src/data_rootfiles/TnP_MuonID__data_all__" + effName[iEff] + scenario[iScen] + ".root";
@@ -136,7 +136,7 @@ void createRootFiles(){
 
     std::string plot;
     if(iScen == 0)
-      plot = "eta_PLOT_Mu7_Track7_Jpsi_TK_pass_&_tag_Mu7_Track7_Jpsi_MU_pass";
+      plot = "eta_PLOT_Mu7p5_Track2_Jpsi_TK_pass_&_tag_Mu7p5_Track2_Jpsi_MU_pass";
     else if(iScen == 1)
       plot = "tag_nVertices_PLOT_Mu7p5_Track2_Jpsi_TK_pass_&_tag_Mu7p5_Track2_Jpsi_MU_pass";
     else if(iScen == 2){

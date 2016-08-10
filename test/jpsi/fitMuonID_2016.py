@@ -233,7 +233,9 @@ PT_ABSETA_BINS = cms.PSet(   SEPARATED,
                           #pt = pT_binning_2012,
                           #pt = pT_binning_2015,
                           #pt = pT_binning_47ipb,
-                         pt = pT_binning_2015,
+                         # pt = pT_binning_2015,
+                         # pt = cms.vdouble(2.0, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75, 4.0, 4.5, 5.0, 6.0),
+                         pt = cms.vdouble(6.0, 8.0, 10.0, 15.0, 20.0, 30.0, 40.0),
                          # pt = cms.vdouble(2.0, 2.5, 2.75, 3.0, 3.25), # TODO
                          # pt = cms.vdouble(3.25, 3.5, 3.75, 4.0, 4.5), # TODO
                          # pt = cms.vdouble(4.5, 5.0, 6.0),
@@ -371,7 +373,7 @@ PT_BINS = cms.PSet(       SEPARATED,
 
 VTX_BINS = cms.PSet(      SEPARATED,
                           abseta = cms.vdouble(0.0, 2.4),
-                          pt     = cms.vdouble(8.0, 40.0),
+                          pt     = cms.vdouble(8.0, 500.0),
                           tag_nVertices = cms.vdouble(0.5,2.5,4.5,6.5,8.5,10.5,12.5,14.5,16.5,18.5,20.5,22.5,24.5,26.5,28.5,30.5)
                           #tag_nVerticesDA = cms.vdouble(0.5,2.5,4.5,6.5,8.5,10.5,12.5,14.5,16.5,18.5,20.5,22.5,24.5,26.5,28.5,30.5)
                           )
@@ -431,8 +433,7 @@ process.TnP_MuonID = Template.clone(
 )
 
 
-# IDS = ["Loose2016", "Loose2016_test", "Medium2016", "Soft2016"]
-IDS = ["Medium2016"]#, "Loose2016_test"]
+IDS = ["Loose2016", "Medium2016"]
 
 TRIGS = [ (2,'Mu7p5_Track2_Jpsi') ]
 if "Mu8" in process.TnP_MuonID.InputFileNames[0]:
@@ -450,9 +451,10 @@ if "25ns" in process.TnP_MuonID.InputFileNames[0]:
      mode = "25ns_"
 else: mode = ""
 
-ALLBINS = [("pt_abseta", PT_ABSETA_BINS)]
+# ALLBINS = [("pt_abseta", PT_ABSETA_BINS)]
 # ALLBINS = [("plateau_abseta", PLATEAU_ABSETA)]
 # ALLBINS = [("vtx", VTX_BINS)]
+ALLBINS = [("eta", PLATEAU_ETA)]
 
 # if "Mu8" in process.TnP_MuonID.InputFileNames[0]:
 #      ALLBINS =  [("pt_abseta",PT_ABSETA_BINS_Mu8)]

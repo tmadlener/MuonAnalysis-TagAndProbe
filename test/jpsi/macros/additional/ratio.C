@@ -29,12 +29,12 @@ void ratio(){
   //steering variable: 1 = eta, 2 = abseta, 3 = pt, 4 = vertex
   // id = Tight, Loose, Soft
   // separation = "", _seagulls, _cowboys
-  int scenario = 4;
+  int scenario = 3;
   std::string id = "Loose2016";
   std::string title = "Loose ID";
   std::string separation = "";
   std::string absetaBin;
-  if(scenario == 3) absetaBin = "3";
+  if(scenario == 3) absetaBin = "1";
   // std::string add = "_2012_highestBinsMerged"; //_2012_highestBinsMerged
 
   gROOT->SetStyle("Plain");
@@ -55,16 +55,16 @@ void ratio(){
 
   // binning
   //eta
-  const std::vector<double> bins1 = {-2.1, -1.6, -1.2, -0.9, -0.6, -0.3, -0.2, 0.2, 0.3, 0.6, 0.9, 1.2, 1.6, 2.1};
+  const std::vector<double> etaBins = {-2.4,-2.1, -1.6, -1.2, -0.9, -0.6, -0.3, -0.2, 0.2, 0.3, 0.6, 0.9, 1.2, 1.6, 2.1, 2.4};
 
   //abseta
-  const std::vector<double> bins2 = {0., 0.9, 1.2, 2.1, 2.4};
+  const std::vector<double> absEtaBins = {0., 0.9, 1.2, 2.1, 2.4};
 
   //pt
-  const std::vector<double> bins3 = {2.0, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75, 4.0, 4.5, 5.0, 6.0, 8.0, 10.0, 15.0, 20.0, 30.0, 40.0};
+  const std::vector<double> ptBins = {2.0, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75, 4.0, 4.5, 5.0, 6.0, 8.0, 10.0, 15.0, 20.0, 30.0, 40.0};
 
   //vertex
-  const std::vector<double> bins4 = {0.5, 2.5, 4.5, 6.5, 8.5, 10.5, 12.5, 14.5, 16.5, 18.5, 20.5, 22.5, 24.5, 26.5, 28.5, 30.5};
+  const std::vector<double> vtxBins = {0.5, 2.5, 4.5, 6.5, 8.5, 10.5, 12.5, 14.5, 16.5, 18.5, 20.5, 22.5, 24.5, 26.5, 28.5, 30.5};
 
 
   switch(scenario){
@@ -73,9 +73,9 @@ void ratio(){
     xtitle = "#eta";
     scen = "eta";
     values = "p_{T} > 8 GeV/c";
-    bins = bins1;
-    x1 = -2.2; // -2.2
-    x2 = 2.2; // 2.2
+    bins = etaBins;
+    x1 = -2.5; // -2.2
+    x2 = 2.5; // 2.2
     y1 = 0.9; // 0.5
     y2 = 1.1; // 1.3
     hy1 = 0.75;
@@ -86,7 +86,7 @@ void ratio(){
     xtitle = "|#eta|";
     scen = "plateau_abseta";
     values = "p_{T} > 8 GeV/c";
-    bins = bins2;
+    bins = absEtaBins;
     x1 = 0;
     x2 = 2.4;
     y1 = 0.3;
@@ -98,27 +98,21 @@ void ratio(){
     std::cout << "processing pt" << std::endl;
     xtitle = "p_{T} [GeV/c]";
     scen = "pt_abseta";
+    y1 = 0.6;
+    y2 = 1.2;
     if(absetaBin == "0"){
       values = "|#eta| < 0.9";
-      bins = bins3;
-      y2 = 1.2;
-      if(id == "Tight") y2 = 1.4;
+      // if(id == "Tight") y2 = 1.4;
     } else if(absetaBin == "1"){
       values = "0.9 < |#eta| < 1.2";
-      bins = bins3;
-      y2 = 1.7;
     } else if(absetaBin == "2"){
       values = "1.2 < |#eta| < 2.1";
-      bins = bins3;
-      y2 = 1.2;
     } else if (absetaBin == "3") {
       values = "2.1 < |#eta| < 2.4";
-      bins = bins3;
-      y2 = 1.2;
     }
+    bins = ptBins;
     x1 = 1;
-    x2 = 21;
-    y1 = 0.75;
+    x2 = 41;
     t2 = 0.8;
     hy2 = 1.1;
     hy1 = 0.;
@@ -132,7 +126,7 @@ void ratio(){
     xtitle = "number of vertices";
     scen = "vtx";
     values = "|#eta| < 2.4, p_{T} > 8 GeV/c";
-    bins = bins4;
+    bins = vtxBins;
     x1 = 0.;
     x2 = 31.;
     y1 = 0.9;
