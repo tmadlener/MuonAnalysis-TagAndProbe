@@ -44,8 +44,8 @@ void createRootFiles(){
   gStyle->SetTitleBorderSize(0);
 
   // const std::vector<std::string> effName = {"Loose2012", "Soft2012", "newSoft2012", "Tight2012"};
-  const std::vector<std::string> effName = {"Loose2016"};
-  int iEff = 0;
+  const std::vector<std::string> effName = {"Loose2016", "Medium2016", "Soft2016", "Tight2016"};
+  int iEff = 3;
   const std::vector<std::string> scenario = {"_eta", "_vtx", "_plateau_abseta"};
   int iScen = 0;
 
@@ -64,7 +64,7 @@ void createRootFiles(){
 
   //Declare bins according to efficiency
   //eta
-  const std::vector<double> etabins = {-2.1, -1.6, -1.2, -0.9, -0.6, -0.3, -0.2, 0.2, 0.3, 0.6, 0.9, 1.2, 1.6, 2.1};
+  const std::vector<double> etabins = {-2.4, -2.1, -1.6, -1.2, -0.9, -0.3, -0.2, 0.2, 0.3, 0.9, 1.2, 1.6, 2.1, 2.4};
 
   //vtx
   const std::vector<double> vtxbins = {0.5, 2.5, 4.5, 6.5, 8.5, 10.5, 12.5, 14.5, 16.5, 18.5, 20.5, 22.5, 24.5, 26.5, 28.5, 30.5};

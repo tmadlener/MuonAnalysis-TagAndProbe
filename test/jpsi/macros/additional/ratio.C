@@ -53,7 +53,7 @@ void ratio(){
 
   // binning
   //eta
-  const std::vector<double> etaBins = {-2.4,-2.1, -1.6, -1.2, -0.9, -0.6, -0.3, -0.2, 0.2, 0.3, 0.6, 0.9, 1.2, 1.6, 2.1, 2.4};
+  const std::vector<double> etaBins = {-2.4, -2.1, -1.6, -1.2, -0.9, -0.3, -0.2, 0.2, 0.3, 0.9, 1.2, 1.6, 2.1, 2.4};
 
   //abseta
   const std::vector<double> absEtaBins = {0., 0.9, 1.2, 2.1, 2.4};
