@@ -1,3 +1,5 @@
+#include "common_utils.h"
+
 //C/C++
 #include <iostream>
 #include <string>
@@ -29,12 +31,12 @@ void ratio(){
   //steering variable: 1 = eta, 2 = abseta, 3 = pt, 4 = vertex
   // id = Tight, Loose, Soft
   // separation = "", _seagulls, _cowboys
-  int scenario = 3;
-  std::string id = "Loose2016";
-  std::string title = "Loose ID";
-  std::string separation = "";
+  int scenario = 1;
+  const std::string id = "Tight2016";
+  const std::string title = "Tight ID";
+  const std::string separation = "";
   std::string absetaBin;
-  if(scenario == 3) absetaBin = "1";
+  if(scenario == 3) absetaBin = "0";
   // std::string add = "_2012_highestBinsMerged"; //_2012_highestBinsMerged
 
   gROOT->SetStyle("Plain");
@@ -46,10 +48,6 @@ void ratio(){
   //gStyle->SetPadBottomMargin(1.3);
   //gStyle->SetTitleYOffset(1.1);
 
-  double x1 = 0, x2 = 0, y1 = 0, y2 = 0,
-    t1 = 0.43, t2 = 0.8, t3 = 0.63, t4 = 0.9,
-    lx = 0.65, hy2 = 1.05, hy1 = 0.;
-  std::string xtitle, values;
   std::string scen;
   std::vector <double> bins;
 
@@ -67,78 +65,32 @@ void ratio(){
   const std::vector<double> vtxBins = {0.5, 2.5, 4.5, 6.5, 8.5, 10.5, 12.5, 14.5, 16.5, 18.5, 20.5, 22.5, 24.5, 26.5, 28.5, 30.5};
 
 
+  PlotSettings plotting = getDefaultSettings(scenario, absetaBin);
+
   switch(scenario){
   case 1:
     std::cout << "processing eta" << std::endl;
-    xtitle = "#eta";
     scen = "eta";
-    values = "p_{T} > 8 GeV/c";
     bins = etaBins;
-    x1 = -2.5; // -2.2
-    x2 = 2.5; // 2.2
-    y1 = 0.9; // 0.5
-    y2 = 1.1; // 1.3
-    hy1 = 0.75;
-    hy2 = 1.1;
     break;
   case 2:
     std::cout << "processing abseta" << std::endl;
-    xtitle = "|#eta|";
     scen = "plateau_abseta";
-    values = "p_{T} > 8 GeV/c";
     bins = absEtaBins;
-    x1 = 0;
-    x2 = 2.4;
-    y1 = 0.3;
-    y2 = 1.3;
-    t2 = 0.6;
-    t4 = 0.7;
     break;
   case 3:
     std::cout << "processing pt" << std::endl;
-    xtitle = "p_{T} [GeV/c]";
     scen = "pt_abseta";
-    y1 = 0.6;
-    y2 = 1.2;
-    if(absetaBin == "0"){
-      values = "|#eta| < 0.9";
-      // if(id == "Tight") y2 = 1.4;
-    } else if(absetaBin == "1"){
-      values = "0.9 < |#eta| < 1.2";
-    } else if(absetaBin == "2"){
-      values = "1.2 < |#eta| < 2.1";
-    } else if (absetaBin == "3") {
-      values = "2.1 < |#eta| < 2.4";
-    }
     bins = ptBins;
-    x1 = 1;
-    x2 = 41;
-    t2 = 0.8;
-    hy2 = 1.1;
-    hy1 = 0.;
-    t1 = lx;
-    t3 = 0.9;
-    t2 = 0.4;
-    t4 = 0.5;
     break;
   case 4:
     std::cout << "processing vertex" << std::endl;
-    xtitle = "number of vertices";
     scen = "vtx";
-    values = "|#eta| < 2.4, p_{T} > 8 GeV/c";
     bins = vtxBins;
-    x1 = 0.;
-    x2 = 31.;
-    y1 = 0.9;
-    y2 = 1.1;
-    hy1 = 0.75;
-    hy2 = 1.1;
-    lx = 0.56;
     break;
   }
 
   std::stringstream file;
-  // file << "/scratch/ikratsch/TnP2012/MuonPOG/official6March2014/changedMass/MuonID_" << id.c_str() << "2012_" << scen.c_str() << absetaBin.c_str() << separation.c_str() << add.c_str() << ".root"; //_2012
   file << "/afs/hephy.at/work/t/tmadlener/CMSSW_8_0_12/src/outputfiles/MuonID_" << id << "_" << scen << absetaBin << ".root";
   TFile *f = TFile::Open(file.str().c_str());
 
@@ -154,7 +106,7 @@ void ratio(){
   pad1->Draw();
   pad1->cd();
 
-  TH1F *hFrame1 = pad1->DrawFrame(x1, hy1, x2, hy2);
+  TH1F *hFrame1 = pad1->DrawFrame(plotting.x1, plotting.hy1, plotting.x2, plotting.hy2);
   hFrame1->SetYTitle("#epsilon");
   if(scenario == 3)  hFrame1->GetYaxis()->SetTitleOffset(1.3);
   else  hFrame1->GetYaxis()->SetTitleOffset(1.6);
@@ -169,7 +121,7 @@ void ratio(){
   hFrame1->GetYaxis()->SetNdivisions(510);
   hFrame1->GetYaxis()->SetDecimals();
 
-  TLegend *l1 = new TLegend(lx, 0.13, 0.9, 0.35, values.c_str());
+  TLegend *l1 = new TLegend(plotting.lx, 0.13, 0.9, 0.35, plotting.values.c_str());
   l1->SetTextSize(0.05);
   //l1->SetBorderSize(0);
   l1->SetFillColor(kWhite);
@@ -190,7 +142,7 @@ void ratio(){
   line->SetLineStyle(3);
 
   for(unsigned int iBins = 0; iBins < bins.size(); iBins++){
-    line->DrawLine(bins[iBins], hy1, bins[iBins], hy2);
+    line->DrawLine(bins[iBins], plotting.hy1, bins[iBins], plotting.hy2);
   }
   pad1->SetGridy();
 
@@ -212,7 +164,7 @@ void ratio(){
   //if(scenario == 3) left = 0.25;
   //latex2->DrawLatex(left,bottom,values.c_str());
 
-  TPaveText *text = new TPaveText(t1,t2,t3,t4,"NDC");
+  TPaveText *text = new TPaveText(plotting.t1,plotting.t2,plotting.t3,plotting.t4,"NDC");
   text->SetFillColor(kWhite);
   text->SetTextSize(0.05);
   text->AddText(title.c_str());
@@ -227,8 +179,8 @@ void ratio(){
   pad2->Draw();
   pad2->cd();
 
-  TH1F *hFrame2 = pad2->DrawFrame(x1, y1, x2, y2);
-  hFrame2->SetXTitle(xtitle.c_str());
+  TH1F *hFrame2 = pad2->DrawFrame(plotting.x1, plotting.y1, plotting.x2, plotting.y2);
+  hFrame2->SetXTitle(plotting.xtitle.c_str());
   hFrame2->SetYTitle("Data/MC");
   if(scenario == 3) hFrame2->GetYaxis()->SetTitleOffset(1.3);
   else hFrame2->GetYaxis()->SetTitleOffset(1.6);
@@ -250,14 +202,14 @@ void ratio(){
   g_ratio->SetMarkerStyle(21);
 
   for(unsigned int iBins = 0; iBins < bins.size(); iBins++){
-    line->DrawLine(bins[iBins], y1, bins[iBins], y2);
+    line->DrawLine(bins[iBins], plotting.y1, bins[iBins], plotting.y2);
   }
   pad2->SetGridy();
 
   c->cd();
   std::string baseDir = "/afs/hephy.at/work/t/tmadlener/CMSSW_8_0_12/src/outputfiles/";
   std::stringstream name;
-  name << baseDir << "Figures/Approval/" << id.c_str() << "ID_" << scen.c_str() << absetaBin.c_str() << separation.c_str() << "_2016.pdf";
+  name << baseDir << "Figures/Approval/" << id << "ID_" << scen << absetaBin << separation << "_2016.pdf";
   c->SaveAs(name.str().c_str());
 }
 
