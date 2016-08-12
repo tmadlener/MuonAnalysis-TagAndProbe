@@ -53,12 +53,12 @@ Template = cms.EDAnalyzer("TagProbeFitTreeAnalyzer",
         # dxyBS = cms.vstring("dxyBS", "-1000", "1000", ""), # unused?
         # tkValidHits = cms.vstring("track.numberOfValidHits", "-1", "999", ""), # unused?
         tkTrackerLay = cms.vstring("track.hitPattern.trackerLayersWithMeasurement", "-1", "999", ""),
-        # tkValidPixelHits = cms.vstring("track.hitPattern.numberOfValidPixelHits", "-1", "999", ""), # unused?
+        tkValidPixelHits = cms.vstring("track.hitPattern.numberOfValidPixelHits", "-1", "999", ""), # unused?
         tkPixelLay = cms.vstring("track.hitPattern.pixelLayersWithMeasurement", "-1", "999", ""),
         tkChi2 = cms.vstring("track.normalizedChi2", "-1", "999", ""),
-        # numberOfMatchedStations = cms.vstring("numberOfMatchedStations", "-1", "99", ""), # unused?
+        numberOfMatchedStations = cms.vstring("numberOfMatchedStations", "-1", "99", ""), # unused?
         glbChi2 = cms.vstring("global.normalizedChi2", "-9999", "9999", ""),
-        # glbValidMuHits = cms.vstring("globalTrack.numberOfValidMuonHits", "-1", "9999", ""), # unused?
+        glbValidMuHits = cms.vstring("globalTrack.numberOfValidMuonHits", "-1", "9999", ""), # unused?
         # caloComp = cms.vstring("caloCompatibility","-1","5",""),
         # caloCompatibility = cms.vstring("caloCompatibility", "-1", "5", ""), # renamed in 2016 TnP # unused?
         # Added for mediumVar
@@ -139,11 +139,13 @@ Template = cms.EDAnalyzer("TagProbeFitTreeAnalyzer",
 
    Expressions = cms.PSet(
      Loose2015Var = cms.vstring("Loose2015Var", "PF==1", "PF"),
-        Loose2016Var = cms.vstring("Loose2016Var", "Loose == 1", "Loose"), # Loose is present in TTrees! Doing it this way, in order to have a consistent definition of the IDs (cuts) below
+     Loose2016Var = cms.vstring("Loose2016Var", "Loose == 1", "Loose"), # Loose is present in TTrees! Doing it this way, in order to have a consistent definition of the IDs (cuts) below
      Medium2016Var = cms.vstring("Medium2016Var", "Loose == 1 && tkHitFract > 0.49 && ((Glb == 1 && glbChi2 < 3 && chi2LocPos < 12. && tkKink < 20. && segmentCompatibility > 3.03) || segmentCompatibility > 0.451)",
                                  "Loose", "tkHitFract", "Glb", "glbChi2", "chi2LocPos", "tkKink", "segmentCompatibility"),
      Soft2016Var = cms.vstring("Soft2016Var", "TMOST == 1 && tkTrackerLay > 5 && tkPixelLay > 0 && abs(dzPV) < 20. && abs(dB) < 0.3",
                                "TMOST", "tkTrackerLay", "tkPixelLay", "dzPV", "dB"),
+     Tight2016Var = cms.vstring("Tight2016Var", "Glb == 1 && PF == 1 && glbChi2 < 10 && glbValidMuHits > 0 && numberOfMatchedStations > 1 && dB < 0.2 && dzPV < 0.5 && tkValidPixelHits > 0 && tkTrackerLay > 5",
+                                "Glb", "PF", "glbChi2", "glbValidMuHits", "numberOfMatchedStations", "dB", "dzPV", "tkValidPixelHits", "tkTrackerLay")
    ),
 
    Cuts = cms.PSet(
@@ -151,6 +153,7 @@ Template = cms.EDAnalyzer("TagProbeFitTreeAnalyzer",
           Loose2016 = cms.vstring("Loose2016", "Loose2016Var", "0.5"),
           Medium2016 = cms.vstring("Medium2016", "Medium2016Var", "0.5"),
           Soft2016 = cms.vstring("Soft2016", "Soft2016Var", "0.5"),
+          Tight2016 = cms.vstring("Tight2016", "Tight2016Var", "0.5"),
           ),
 
    PDFs = cms.PSet(
@@ -230,24 +233,42 @@ PT_ETA_BINS = cms.PSet(   SEPARATED,
                        )
 
 PT_ABSETA_BINS = cms.PSet(   SEPARATED,
-                          #pt = pT_binning_2012,
-                          #pt = pT_binning_2015,
-                          #pt = pT_binning_47ipb,
-                         # pt = pT_binning_2015,
+                         pt = pT_binning_2015,
                          # pt = cms.vdouble(2.0, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75, 4.0, 4.5, 5.0, 6.0),
-                         pt = cms.vdouble(6.0, 8.0, 10.0, 15.0, 20.0, 30.0, 40.0),
-                         # pt = cms.vdouble(2.0, 2.5, 2.75, 3.0, 3.25), # TODO
-                         # pt = cms.vdouble(3.25, 3.5, 3.75, 4.0, 4.5), # TODO
-                         # pt = cms.vdouble(4.5, 5.0, 6.0),
-                         # pt = cms.vdouble(6.0, 8.0, 10),
-                         # pt = cms.vdouble(10.0, 15.0, 20.0, 30.0, 40.0),
-                          #abseta = cms.vdouble(0.0,0.9,1.2,2.1) # 2012
-                         # abseta = abseta_binning_47ipb
+                         # pt = cms.vdouble(6.0, 8.0, 10.0, 15.0, 20.0, 30.0, 40.0),
                          abseta = cms.vdouble(0, 0.9), # "split" input file into abseta bins, this one does not fit into 32 G of RAM (data) when used with all pT bins!
                          # abseta = cms.vdouble(0.9, 1.2), # "split" input file into abseta bins
                          # abseta = cms.vdouble(1.2, 2.1), # "split" input file into abseta bins
                          # abseta = cms.vdouble(2.1, 2.4), # "split" input file into abseta bins
                        )
+
+PT0_ABSETA0_BINS = cms.PSet(SEPARATED,
+                            pt = cms.vdouble(2.0, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75, 4.0, 4.5, 5.0, 6.0),
+                            abseta = cms.vdouble(0, 0.9),
+)
+
+PT1_ABSETA0_BINS = cms.PSet(SEPARATED,
+                            pt = cms.vdouble(6.0, 8.0, 10.0, 15.0, 20.0, 30.0, 40.0),
+                            abseta = cms.vdouble(0, 0.9),
+)
+
+PT_ABSETA1_BINS = cms.PSet(   SEPARATED,
+                         pt = pT_binning_2015,
+                         abseta = cms.vdouble(0.9, 1.2), # "split" input file into abseta bins
+)
+
+PT_ABSETA2_BINS = cms.PSet(   SEPARATED,
+                         pt = pT_binning_2015,
+                         abseta = cms.vdouble(1.2, 2.1), # "split" input file into abseta bins
+                       )
+
+PT_ABSETA3_BINS = cms.PSet(   SEPARATED,
+                         pt = pT_binning_2015,
+                         abseta = cms.vdouble(2.1, 2.4), # "split" input file into abseta bins
+                       )
+
+
+
 
 PT_ABSETA_BINS_Mu8 = cms.PSet(   SEPARATED,
                           pt = pT_binning_Mu8,
@@ -432,8 +453,30 @@ process.TnP_MuonID = Template.clone(
      Efficiencies = cms.PSet(),
 )
 
+def getFirstLastElement(cms_vector):
+     """Get the first and the last element of the passed vector. Returns a list."""
+     internal_vector=[v for v in cms_vector] # "clone" the vector to not mess with it externally
+     return [internal_vector[0], internal_vector[-1]]
 
-IDS = ["Loose2016", "Medium2016"]
+def ptAbsetaOutputFileTrail(binning):
+     """Get the trailing part of the output filename for the pt_abseta case.
+     It is computed from the binning.abseta and binning.pt parts of the passed PSet binning.
+     If the first and the last value of the binning.pt are the same as the first and the last values of the pT_binning_2015
+     then the label pt_all is added instead of the values."""
+     absetaBounds = getFirstLastElement(binning.abseta)
+     ptBounds = getFirstLastElement(binning.pt)
+     repP = lambda x: "{:.1f}".format(x).replace('.', 'p') # convert floats to strings and replace the . with p
+     strList = ['abseta'] + [repP(v) for v in absetaBounds] + ['pt']
+     if ptBounds == getFirstLastElement(pT_binning_2015):
+          strList += ['all']
+     else:
+          strList += [repP(v) for v in ptBounds]
+     return '_'.join(strList)
+
+
+# IDS = ["Loose2016", "Medium2016"]
+IDS = ["Soft2016", "Tight2016"]
+# IDS = ["Medium2016"]
 
 TRIGS = [ (2,'Mu7p5_Track2_Jpsi') ]
 if "Mu8" in process.TnP_MuonID.InputFileNames[0]:
@@ -453,8 +496,13 @@ else: mode = ""
 
 # ALLBINS = [("pt_abseta", PT_ABSETA_BINS)]
 # ALLBINS = [("plateau_abseta", PLATEAU_ABSETA)]
-# ALLBINS = [("vtx", VTX_BINS)]
-ALLBINS = [("eta", PLATEAU_ETA)]
+# ALLBINS = [("vtx", VTX_BINS)], ("eta", PLATEAU_ETA)]
+# ALLBINS = [("eta", PLATEAU_ETA)]
+ALLBINS = [("pt_abseta", PT0_ABSETA0_BINS), # not necessary to split these for MC!
+           ("pt_abseta", PT1_ABSETA0_BINS),
+           ("pt_abseta", PT_ABSETA1_BINS),
+           ("pt_abseta", PT_ABSETA2_BINS),
+           ("pt_abseta", PT_ABSETA3_BINS),]
 
 # if "Mu8" in process.TnP_MuonID.InputFileNames[0]:
 #      ALLBINS =  [("pt_abseta",PT_ABSETA_BINS_Mu8)]
@@ -471,16 +519,20 @@ print "Going to define TagProbeFitTreeAnalyzer for " + ', '.join(IDS) + " effici
 for ID in IDS:
      #if len(args) > 1 and args[1] in IDS and ID != args[1]: continue
      if len(args) > 1 and ID != args[1]: continue
-     for X,B in ALLBINS:
-          if len(args) > 2 and X not in args[2:]: continue
+     for NAME, BINNING in ALLBINS:
+          if len(args) > 2 and NAME not in args[2:]: continue
           module = process.TnP_MuonID.clone(OutputFileName = cms.string(
-                    "TnP_MuonID__%s_%s_%s_%s.root" %(scenario, mode, ID, X)))
+                    "TnP_MuonID__%s_%s_%s_%s.root" %(scenario, mode, ID, NAME)))
           if "Mu8" in process.TnP_MuonID.InputFileNames[0]:
                #module.OutputFileName = module.OutputFileName.replace(".root","_Mu8.root")
                module.OutputFileName = cms.string(
-                    "TnP_MuonID__%s_%s_%s_%s_Mu8.root" %(scenario, mode, ID, X))
-          #DEN = B.clone()
-          #setattr(module.Efficiencies, ID+"_"+X, cms.PSet(
+                    "TnP_MuonID__%s_%s_%s_%s_Mu8.root" %(scenario, mode, ID, NAME))
+          if "pt_abseta" in NAME:
+               module.OutputFileName = cms.string(
+                    "TnP_MuonID__{}_{}_{}_{}_{}.root".format(scenario, mode, ID, NAME, ptAbsetaOutputFileTrail(BINNING)))
+
+          #DEN = BINNING.clone()
+          #setattr(module.Efficiencies, ID+"_"+NAME, cms.PSet(
           #          EfficiencyCategoryAndState = cms.vstring(ID,"above"),     # ??
           #          UnbinnedVariables = UnbinnedVars,
           #          BinnedVariables = DEN,
@@ -490,16 +542,16 @@ for ID in IDS:
           #
           for PTMIN, TRIG in TRIGS:
                TRIGLABEL=""
-               #if "pt_" in X:
-               if "pt" in X or "vtx" in X:
+               #if "pt_" in NAME:
+               if "pt" in NAME or "vtx" in NAME:
                     TRIGLABEL="_"+TRIG
                else:
-                    if TRIG != "Mu7p5_Track2_Jpsi": continue # use only one trigger except for turn-on ("turn-on" = ""pt_" in X")
-                    # if TRIG != "Mu7p5_Track7_Jpsi" and TRIG != "Mu8": continue # use only one trigger except for turn-on ("turn-on" = ""pt_" in X")
-               DEN = B.clone()
+                    if TRIG != "Mu7p5_Track2_Jpsi": continue # use only one trigger except for turn-on ("turn-on" = ""pt_" in NAME")
+                    # if TRIG != "Mu7p5_Track7_Jpsi" and TRIG != "Mu8": continue # use only one trigger except for turn-on ("turn-on" = ""pt_" in NAME")
+               DEN = BINNING.clone()
                if hasattr(DEN, "pt"):
-                    DEN.pt = cms.vdouble(*[i for i in B.pt if i >= PTMIN])
-                    if len(DEN.pt) == 0: raise RuntimeError, "Make sure PTMIN is less than at least one B.pt element!"
+                    DEN.pt = cms.vdouble(*[i for i in BINNING.pt if i >= PTMIN])
+                    if len(DEN.pt) == 0: raise RuntimeError, "Make sure PTMIN is less than at least one BINNING.pt element!"
                     if len(DEN.pt) == 1: DEN.pt = cms.vdouble(PTMIN, DEN.pt[0])
                DEN_forSoftID = DEN.clone()
                DEN_withSoftID = DEN.clone( # check variables bounds if input file changes
@@ -516,7 +568,7 @@ for ID in IDS:
                     #setattr(DEN_forSoftID,     "%s" % TRIG, cms.vstring("pass"))
                #setattr(DEN_forSoftID, "TM", cms.vstring("pass"))
                #if "calomu" in scenario: DEN_forSoftID.Calo = cms.vstring("pass")
-               setattr(module.Efficiencies, ID+"_"+X+TRIGLABEL, cms.PSet(
+               setattr(module.Efficiencies, ID+"_"+NAME+TRIGLABEL, cms.PSet(
                          EfficiencyCategoryAndState = cms.vstring(ID,"above"),     # change to above when using a cut!!!
                          UnbinnedVariables = UnbinnedVars,
                          BinnedVariables = DEN_forSoftID,
@@ -530,7 +582,7 @@ for ID in IDS:
                     if hasattr(DEN_Mu26, "abseta"):
                          DEN_Mu26.abseta = cms.vdouble(*[i for i in DEN.abseta if i < absetaMax])
                          DEN_Mu26.abseta.append(absetaMax)
-		    setattr(module.Efficiencies, "Mu25_"+X, cms.PSet(
+		    setattr(module.Efficiencies, "Mu25_"+NAME, cms.PSet(
                     	    EfficiencyCategoryAndState = cms.vstring("Dimuon10_Jpsi_Barrel","pass"),
                             UnbinnedVariables = UnbinnedVars,
                             BinnedVariables = DEN_Mu25,
@@ -542,7 +594,7 @@ for ID in IDS:
                     if hasattr(DEN_Mu16, "abseta"):
                          DEN_Mu16.abseta = cms.vdouble(*[i for i in DEN.abseta if i < absetaMax])
                          DEN_Mu16.abseta.append(absetaMax)
-                    setattr(module.Efficiencies, "Mu16_"+X, cms.PSet(
+                    setattr(module.Efficiencies, "Mu16_"+NAME, cms.PSet(
                             #EfficiencyCategoryAndState = cms.vstring("Dimuon10_Jpsi_Barrel","pass"), # L3 filter
                             #EfficiencyCategoryAndState = cms.vstring("Dimuon10_L1L2","pass"), # L2 filter
                             EfficiencyCategoryAndState = cms.vstring("Dimuon10_L1L2","pass", "Mu_L3","pass"), # L2 + Mu_L3 filter
@@ -566,7 +618,7 @@ for ID in IDS:
                                    DEN_L1L2.abseta.append(absetaMax)
                               if hasattr(DEN_L3, "abseta"):
                                    DEN_L3.abseta = DEN_L1L2.abseta
-                         setattr(module.Efficiencies, L1L2+"_"+X+TRIGLABEL, cms.PSet(
+                         setattr(module.Efficiencies, L1L2+"_"+NAME+TRIGLABEL, cms.PSet(
                                    EfficiencyCategoryAndState = cms.vstring(L1L2,"pass"),
                                    UnbinnedVariables = UnbinnedVars,
                                    BinnedVariables = DEN_L1L2,
@@ -574,23 +626,27 @@ for ID in IDS:
                                    ))
                          # L3 w.r.t. L1L2
                          setattr(DEN_L3, L1L2, cms.vstring("pass"))
-                         setattr(module.Efficiencies, "L3_wrt_"+L1L2+"_"+X, cms.PSet(
+                         setattr(module.Efficiencies, "L3_wrt_"+L1L2+"_"+NAME, cms.PSet(
                                    EfficiencyCategoryAndState = cms.vstring("Mu_L3","pass"),
                                    UnbinnedVariables = UnbinnedVars,
                                    BinnedVariables = DEN_L3,
                                    BinToPDFmap = cms.vstring("signalPlusBkg"),
                                    ))
-               #if "plateau" in X: module.SaveWorkspace = True
+               #if "plateau" in NAME: module.SaveWorkspace = True
                ## mc efficiency, if scenario is mc
                #if "mc" in scenario:
-               #     setattr(module.Efficiencies, ID+"_"+X+TRIGLABEL+"_mcTrue", cms.PSet(
+               #     setattr(module.Efficiencies, ID+"_"+NAME+TRIGLABEL+"_mcTrue", cms.PSet(
                #         EfficiencyCategoryAndState = cms.vstring(ID,"above"),  # ?? "pass"
                #         UnbinnedVariables = UnbinnedVars,
                #         BinnedVariables = DEN.clone(mcTrue = cms.vstring("true"))
                #     ))
           # comment out the following two lines to not run this efficiency
-          setattr(process, "TnP_MuonID__"+ID+"_"+X, module)
-          setattr(process, "run_"+ID+"_"+X, cms.Path(module))
+          # tmadlener, 12.08.2016: It seems that if I have different binnings with the same name, only the last binning will be used
+          #            To prevent this I simply add a 'unique' identifier here, in order to have all of them executed
+          #            TODO: Check if this has any unwanted side-effects. (Until now I have not found any!)
+          setattr(process, "TnP_MuonID__"+ID+"_"+NAME+ptAbsetaOutputFileTrail(BINNING), module)
+          setattr(process, "run_"+ID+"_"+NAME+ptAbsetaOutputFileTrail(BINNING), cms.Path(module))
+
 
 
 
