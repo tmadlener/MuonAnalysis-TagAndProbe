@@ -498,8 +498,9 @@ else: mode = ""
 # ALLBINS = [("plateau_abseta", PLATEAU_ABSETA)]
 # ALLBINS = [("vtx", VTX_BINS)], ("eta", PLATEAU_ETA)]
 # ALLBINS = [("eta", PLATEAU_ETA)]
-ALLBINS = [("pt_abseta", PT0_ABSETA0_BINS), # not necessary to split these for MC!
-           ("pt_abseta", PT1_ABSETA0_BINS),
+ALLBINS = [("pt_abseta", PT_ABSETA_BINS),
+           # ("pt_abseta", PT0_ABSETA0_BINS), # not necessary to split these for MC!
+           # ("pt_abseta", PT1_ABSETA0_BINS),
            ("pt_abseta", PT_ABSETA1_BINS),
            ("pt_abseta", PT_ABSETA2_BINS),
            ("pt_abseta", PT_ABSETA3_BINS),]

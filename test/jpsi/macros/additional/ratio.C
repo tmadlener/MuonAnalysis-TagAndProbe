@@ -31,9 +31,9 @@ void ratio(){
   //steering variable: 1 = eta, 2 = abseta, 3 = pt, 4 = vertex
   // id = Tight, Loose, Soft
   // separation = "", _seagulls, _cowboys
-  int scenario = 1;
-  const std::string id = "Tight2016";
-  const std::string title = "Tight ID";
+  int scenario = 3;
+  const std::string id = "Soft2016";
+  const std::string title = "Soft ID";
   const std::string separation = "";
   std::string absetaBin;
   if(scenario == 3) absetaBin = "0";
