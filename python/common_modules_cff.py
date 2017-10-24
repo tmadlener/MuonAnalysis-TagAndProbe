@@ -4,6 +4,10 @@ from MuonAnalysis.TagAndProbe.nearbyMuonsInfo_cfi import nearbyMuonsInfo as tagP
 from JetMETCorrections.Configuration.JetCorrectors_cff import ak4PFCHSL1FastL2L3CorrectorChain, ak4PFCHSL1FastL2L3Corrector
 from JetMETCorrections.Configuration.JetCorrectors_cff import ak4PFCHSL3AbsoluteCorrector, ak4PFCHSL2RelativeCorrector, ak4PFCHSL1FastjetCorrector
 
+tagProbeStaSeparation = tagProbeSeparation.clone(
+    src = cms.InputTag("tpPairsSta"), 
+    ) 
+
 #########################################################################################
 ##        Object counting modules                                                      ##
 #########################################################################################
@@ -192,6 +196,9 @@ probeMultiplicity = cms.EDProducer("ProbeMulteplicityProducer",
    #pairCut  = cms.string(""),  # count only probes whose pairs satisfy this cut
    #probeCut = cms.string(""),  # count only probes satisfying this cut
 )
+probeStaMultiplicity = probeMultiplicity.clone(
+    pairs = cms.InputTag("tpPairsSta"), 
+) 
 probeMultiplicityTMGM = cms.EDProducer("ProbeMulteplicityProducer",
    pairs = cms.InputTag("tpPairs"),
    #pairCut  = cms.string(""),  # count only probes whose pairs satisfy this cut
